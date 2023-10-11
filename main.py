@@ -1,4 +1,3 @@
-### pip install google-auth google-cloud-aiplatform tiktoken pinecone-client
 import streamlit as st
 import os
 
@@ -32,7 +31,7 @@ def ex3():
 	if clear_session: 
 		st.session_state.clear()
 		print("you session is cleared")
-	
+   	
 	functions = [
 	   			"Function 1", 
 				"Function 2",
@@ -50,9 +49,7 @@ def ex3():
 				"Function 14",
 				"Function 15",
 			]
-	# if 'functions' not in st.session_state: 
-	# 	st.session_state.fuctnions = []
-	# st.session_state.fuctnions = functions
+
   
 	opt = st.sidebar.radio(
 	  		label=":rainbow[Select a Function]",
@@ -75,10 +72,6 @@ def ex3():
 				"Chatbot using Vertex AI with Stream"	#15    
 			], 
    			horizontal=False)
-	
-	# if 'opt' not in st.session_state: 
-	# 	st.session_state.opt = st.sidebar.radio("",options=functions)
-	# st.session_state.opt = opt
 
 	if opt == 'Function 1': ex1()
 	elif opt == 'Function 2': ex2()
@@ -94,7 +87,7 @@ def ex3():
 	elif opt == 'Function 12': ex12()
 	elif opt == 'Function 13': ex13()
 	elif opt == 'Function 14': ex14()
-	elif opt == 'Function 14': ex15()
+	elif opt == 'Function 15': ex15()
 	else: ex1()
  
 
@@ -711,7 +704,6 @@ Below is the conversation history between the AI and Users so far
 
 
 def main():
-
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
   
@@ -728,4 +720,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
