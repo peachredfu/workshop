@@ -11,3 +11,4 @@ google-auth==2.23.2
 tiktoken==0.5.1
 pinecone-client==2.2.4
 lancedb==0.3.0
+streamlit_antd_components==0.2.2
