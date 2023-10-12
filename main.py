@@ -1,17 +1,20 @@
 import streamlit as st
 import os
+import main_code as mc
 
 # Exercise 1: title, text_input, function
 def ex1():
-	st.title("My First Application")
+	with st.expander("Reveal Code"): st.code(mc.code_ex1, language='python')
+	st.subheader("My First Application", divider='rainbow')
 	query = st.text_input("say something")
 	if query:
-		st.write("You entered:  \n   " + query)
+		st.write("**You entered:**   " + query)
 
 
 # Exercise 2: radio button
 def ex2():
-	st.title("Streamlit Radio Button")
+	with st.expander("Reveal Code"): st.code(mc.code_ex2, language='python')
+	st.subheader("Streamlit Radio Button", divider='rainbow')
 	llm = st.radio(
 		"Your preferred LLM",
 		[":rainbow[GPT3.5]", "**PALM**"],
@@ -24,33 +27,33 @@ def ex2():
 	else:
 		st.write("You didn\'t select LLM.")
 
-	
+
 # Exercise 3: sidebar
 def ex3():
+	# with st.expander("Reveal Code"): st.code(mc.code_ex3, language='python')
 	clear_session = st.sidebar.button("**Clear Session**")
 	if clear_session: 
 		st.session_state.clear()
 		print("you session is cleared")
    	
 	functions = [
-	   			"Function 1", 
-				"Function 2",
-	   			"Function 3", 
-				"Function 4",
-	   			"Function 5", 
-				"Function 6",
-	   			"Function 7", 
-				"Function 8",
-	   			"Function 9", 
-				"Function 10",
-				"Function 11",
-				"Function 12",
-				"Function 13",
-				"Function 14",
-				"Function 15",
+	   			"Exercise 1", 
+				"Exercise 2",
+	   			"Exercise 3", 
+				"Exercise 4",
+	   			"Exercise 5", 
+				"Exercise 6",
+	   			"Exercise 7", 
+				"Exercise 8",
+	   			"Exercise 9", 
+				"Exercise 10",
+				"Exercise 11",
+				"Exercise 12",
+				"Exercise 13",
+				"Exercise 14",
+				"Exercise 15",
 			]
-
-  
+ 
 	opt = st.sidebar.radio(
 	  		label=":rainbow[Select a Function]",
 			options=functions,
@@ -63,37 +66,42 @@ def ex3():
 				"Rule-based Echo Chatbot ",	#6
 				"Stremlit Prompt Input Form",	#7
 				"Chatbot using OpenAI API",	#8
-				"Chatbot using OpenAI API with Stream",	#9
+				"Chatbot using OpenAI Stream API",	#9
 				"Chatbot with Memory",	#10
 				"Chatbot using PALM API",	#11   
 				"LanceDB for VectorStore",	#12
 				"Pinecone for VectorStore",	#13
 				"Chatbot using Vertex AI",	#14
-				"Chatbot using Vertex AI with Stream"	#15    
+				"Chatbot using Vertex AI Stream API"	#15    
 			], 
    			horizontal=False)
 
-	if opt == 'Function 1': ex1()
-	elif opt == 'Function 2': ex2()
-	elif opt == 'Function 3': st.write("Sidebar on Your Left")
-	elif opt == 'Function 4': ex4()
-	elif opt == 'Function 5': ex5()
-	elif opt == 'Function 6': ex6()
-	elif opt == 'Function 7': prompt_inputs_form()
-	elif opt == 'Function 8': ex8()
-	elif opt == 'Function 9': ex9()
-	elif opt == 'Function 10': ex10()
-	elif opt == 'Function 11': ex11()
-	elif opt == 'Function 12': ex12()
-	elif opt == 'Function 13': ex13()
-	elif opt == 'Function 14': ex14()
-	elif opt == 'Function 15': ex15()
+	if opt == 'Exercise 1': ex1()
+	elif opt == 'Exercise 2': ex2()
+	elif opt == 'Exercise 3':
+		with st.expander("Reveal Code"): st.code(mc.code_ex3, language='python')
+		st.write("Sidebar on Your Left")
+	elif opt == 'Exercise 4': ex4()
+	elif opt == 'Exercise 5': ex5()
+	elif opt == 'Exercise 6': ex6()
+	elif opt == 'Exercise 7':
+		with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
+		prompt_inputs_form()
+	elif opt == 'Exercise 8': ex8()
+	elif opt == 'Exercise 9': ex9()
+	elif opt == 'Exercise 10': ex10()
+	elif opt == 'Exercise 11': ex11()
+	elif opt == 'Exercise 12': ex12()
+	elif opt == 'Exercise 13': ex13()
+	elif opt == 'Exercise 14': ex14()
+	elif opt == 'Exercise 15': ex15()
 	else: ex1()
  
 
 # Exercise 4: chat elements
 def ex4():
-	st.title("Chat Elements")
+	with st.expander("Reveal Code"): st.code(mc.code_ex4, language='python')
+	st.subheader("Streamlit Chat Elements", divider='rainbow')
 	msg_container = st.container()
 	with msg_container:
 		user_message = st.chat_message("user")
@@ -144,6 +152,7 @@ def is_valid_file(file):
 
 # uploading component
 def ex5():
+	with st.expander("Reveal Code"): st.code(mc.code_ex5, language='python')
 	# File upload section
 	uploaded_file = st.file_uploader("Upload a file", 
 									 type=allowed_extensions)
@@ -162,7 +171,8 @@ def ex5():
 
 #Exercise 6 : Session State, Rule-based Echo Chatbot 
 def ex6():
-	st.title("Rule-based Echo Bot")
+	with st.expander("Reveal Code"): st.code(mc.code_ex6, language='python')
+	st.subheader("Rule-based Echo Bot", divider='rainbow')	
 	# Initialize chat history
 	if "messages" not in st.session_state:
 		st.session_state.messages = []
@@ -192,8 +202,8 @@ def ex6():
   
 
 # Exercise 7 : prompt input form
-def prompt_inputs_form():  # Using st.form, create the starting prompt to your prompt template, this is an expert on a topic that is talking to a user of a certain age
-	# langchain prompt template
+def prompt_inputs_form():  
+	# with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
 	with st.form("Prompt Template"):
 		my_prompt_template = st.text_input("Enter a system prompt template. E.g. You are public officer of Singapore.")
 		# Every form must have a submit button.
@@ -224,7 +234,9 @@ def openai_completion(prompt):
 
 # integration API call into chat components
 def ex8():
-	st.title("Chatbot using OpenAI API")
+	with st.expander("Reveal Code"): st.code(mc.code_ex8, language='python')
+	st.subheader("Chatbot using OpenAI API", divider='rainbow') 
+
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
   	
@@ -273,7 +285,9 @@ def openai_completion_stream(prompt):
 
 # integration API call into streamlit chat components
 def ex9():
-	st.title("Chatbot using OpenAI API with Streaming")
+	with st.expander("Reveal Code"): st.code(mc.code_ex9, language='python')
+	st.subheader("Chatbot using OpenAI Stream API", divider='rainbow')
+ 
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
   
@@ -308,7 +322,9 @@ def ex9():
 import pandas as pd
 from langchain.memory import ConversationBufferWindowMemory
 def ex10():
-	st.title("Chatbot with Memory")
+	with st.expander("Reveal Code"): st.code(mc.code_ex10, language='python')
+	st.subheader("Chatbot with Memory", divider='rainbow')
+	
 	# call prompt_inputs_form to get newly submitted prompt template
 	input_prompt = prompt_inputs_form()
 	if pd.isnull(input_prompt):
@@ -376,7 +392,8 @@ def palm_chat(prompt):
 	return response.last
 
 def ex11():
-	st.title("Chatbot using PALM API")
+	with st.expander("Reveal Code"): st.code(mc.code_ex11, language='python')
+	st.subheader("Chatbot using PALM API", divider='rainbow')
 	# Initialize chat history
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
@@ -415,10 +432,12 @@ def lance_vectorstore_creator():
 	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
 	# loader = PyPDFLoader(f"{os.getcwd}/uploaded_files/*.pdf")
 	documents = loader.load()
-	 # chunk size refers to max no. of chars, not tokens
-	text_splitter = CharacterTextSplitter(separator = "\n\n", 
-											chunk_size=200, 
-											chunk_overlap=0)
+	# chunk size refers to max no. of chars, not tokens
+	text_splitter = CharacterTextSplitter(
+		separator = '\n\n',
+		chunk_size=200, 
+		chunk_overlap=0
+	)
 
 	documents = text_splitter.split_documents(documents)
  
@@ -460,8 +479,9 @@ def get_TableUpdateDate(TBL_DIRECTORY):
 
 
 def ex12():
+	with st.expander("Reveal Code"): st.code(mc.code_ex12, language='python')
+
 	st.subheader('LanceDB for VectorStore (by PAML) and Similarity Search', divider='rainbow')
-	
 	# initialize vectorstore in session_state
 	if "lance_vs" not in st.session_state:
 		st.session_state.lance_vs = False
@@ -486,18 +506,20 @@ def ex12():
 
 # Exercise 13: Pinecone for Text Embeddings and Similarity Search
 from langchain.document_loaders import TextLoader
-from langchain.document_loaders import PyPDFLoader
-from langchain.document_loaders import PyPDFDirectoryLoader
+# from langchain.document_loaders import PyPDFLoader
+# from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.vectorstores import Pinecone
 import pinecone
 
 def pinecone_indexing(index_name):
 	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
 	documents = loader.load()
-		# chunk size refers to max no. of chars, not tokens
-	text_splitter = CharacterTextSplitter(separator = "\n\n", 
-											chunk_size=200, 
-											chunk_overlap=0)
+	# chunk size refers to max no. of chars, not tokens
+	text_splitter = CharacterTextSplitter(
+		separator = "\n\n", 
+		chunk_size=200, 
+		chunk_overlap=0
+  	)
 
 	documents = text_splitter.split_documents(documents)
 
@@ -526,6 +548,7 @@ def pinecone_indexing(index_name):
 	return vectorstore
 
 def ex13():
+	with st.expander("Reveal Code"): st.code(mc.code_ex13, language='python')
 	st.subheader("Pinecone for VectorStore (by PAML) and Similarity Search", divider='rainbow')
 	if "pinecone_vs" not in st.session_state:
 		st.session_state.pinecone_vs = False
@@ -596,7 +619,8 @@ vertex_chat = ChatVertexAI(
 
 # integration API call into chat components
 def ex14():
-	st.title("Chatbot using Vertex AI")
+	with st.expander("Reveal Code"): st.code(mc.code_ex14, language='python')
+	st.subheader("Chatbot using Vertex AI", divider="rainbow")
 	# Initialize chat history
 	# call prompt_inputs_form to get newly submitted prompt template
 	input_prompt = prompt_inputs_form()
@@ -649,7 +673,8 @@ Below is the conversation history between the AI and Users so far
 # Exercise 15: Using VertexAI stream
 # integration strem API call into chat components
 def ex15():
-	st.title("Chatbot using Vertex AI with Streaming")
+	with st.expander("Reveal Code"): st.code(mc.code_ex15, language='python')
+	st.subheader("Chatbot using Vertex AI with Streaming", divider='rainbow')
 	# Initialize chat history
 	# call prompt_inputs_form to get newly submitted prompt template
 	input_prompt = prompt_inputs_form()
@@ -702,8 +727,16 @@ Below is the conversation history between the AI and Users so far
 			{"input": prompt}, {"output": full_response}
 		)
 
-
+from streamlit_antd_components import divider 
 def main():
+	st.set_page_config(
+		page_icon="🧊",
+		layout="wide",
+	) 
+
+	st.title("Hands-on Workshops 2023")
+	divider(label='Exploring Generative AI: Codecraft Workshop', icon='journal-code', align='left')
+
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
   
@@ -717,6 +750,6 @@ def main():
 		st.error("Incorrect password. Please enter the correct password to proceed.")
 
 
-
 if __name__ == "__main__":
 	main()
+
