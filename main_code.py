@@ -423,17 +423,17 @@ code_ex12 = '''
 from langchain.embeddings import GooglePalmEmbeddings
 from langchain.vectorstores import LanceDB
 import lancedb
+from langchain.document_loaders import DirectoryLoader
 from langchain.document_loaders import TextLoader
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
 def lance_vectorstore_creator():
-	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
-	# loader = PyPDFLoader(f"{os.getcwd}/uploaded_files/*.pdf")
+	loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader, show_progress=True)
 	documents = loader.load()
 	# chunk size refers to max no. of chars, not tokens
-	text_splitter = CharacterTextSplitter(
-    	separator = "\n\n",
+	text_splitter = RecursiveCharacterTextSplitter(
+		separators=['\n\n'],
     	chunk_size=200, 
     	chunk_overlap=0
     )
@@ -512,15 +512,14 @@ from langchain.vectorstores import Pinecone
 import pinecone
 
 def pinecone_indexing(index_name):
-	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
+	loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader, show_progress=True)
 	documents = loader.load()
 	# chunk size refers to max no. of chars, not tokens
-	text_splitter = CharacterTextSplitter(
-    	separator = "\n\n", 
+	text_splitter = RecursiveCharacterTextSplitter(
+		separators=['\n\n'],
 		chunk_size=200, 
 		chunk_overlap=0
   	)
-
 	documents = text_splitter.split_documents(documents)
 
 	dimensions = len(palmembeddings.embed_query("put anything"))
@@ -661,7 +660,7 @@ Below is the conversation history between the AI and Users so far
 
 		with st.chat_message("assistant"):
 			message_placeholder = st.empty()
-			full_response = vertex_chat([SystemMessage(content=st.session_state.prompt_template) ,HumanMessage(content=prompt)]) # further improve https://python.langchain.com/docs/integrations/chat/google_vertex_ai_palm
+			full_response = vertex_chat([SystemMessage(content=st.session_state.prompt_template) ,HumanMessage(content=prompt)])
 			message_placeholder.markdown(full_response.content)
 		
 		st.session_state.msg.append({"role": "assistant", "content": full_response.content})
@@ -729,9 +728,4 @@ Below is the conversation history between the AI and Users so far
 		)
 
 '''
-
-
-
-
-
 
