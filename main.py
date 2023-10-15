@@ -424,17 +424,21 @@ def ex11():
 from langchain.embeddings import GooglePalmEmbeddings
 from langchain.vectorstores import LanceDB
 import lancedb
+from langchain.document_loaders import DirectoryLoader
 from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
 def lance_vectorstore_creator():
-	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
-	# loader = PyPDFLoader(f"{os.getcwd}/uploaded_files/*.pdf")
+	loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader, show_progress=True)
 	documents = loader.load()
+	# loader = PyPDFLoader(f"{UPLOAD_DIRECTORY}"/*.pdf")
+	# documents = loader.load_and_split()
+
 	# chunk size refers to max no. of chars, not tokens
-	text_splitter = CharacterTextSplitter(
-		separator = '\n\n',
+	text_splitter = RecursiveCharacterTextSplitter(
+		separators=['\n\n'],
 		chunk_size=200, 
 		chunk_overlap=0
 	)
@@ -512,11 +516,11 @@ from langchain.vectorstores import Pinecone
 import pinecone
 
 def pinecone_indexing(index_name):
-	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
+	loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader, show_progress=True)
 	documents = loader.load()
 	# chunk size refers to max no. of chars, not tokens
-	text_splitter = CharacterTextSplitter(
-		separator = "\n\n", 
+	text_splitter = RecursiveCharacterTextSplitter(
+		separators=['\n\n'], 
 		chunk_size=200, 
 		chunk_overlap=0
   	)
