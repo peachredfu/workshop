@@ -1,14 +1,86 @@
 import streamlit as st
 import os
 import main_code as mc
+from streamlit_antd_components import menu, MenuItem, divider
 
-# Exercise 1: title, text_input, function
+def workshop_sidebar():  
+	with st.sidebar: #options for sidebar
+		opt = menu([
+				MenuItem('Deck', icon='file-slides', href='https://docs.google.com/presentation/d/169KpD9qmabZ00mdAQEawhpPqv1MLMijW6jiPV_nKbLk/edit?usp=sharing'),
+				MenuItem('Workshop Template', icon=''),
+				MenuItem('Intro to Streamlit', icon='', children=[
+					MenuItem("Exercise 1", icon='journal-code'),
+					MenuItem("Exercise 2", icon='journal-code'),
+					MenuItem("Exercise 3", icon='journal-code'),
+					MenuItem("Exercise 4", icon='journal-code'),
+					MenuItem("Exercise 5", icon='journal-code'),
+				]),
+				MenuItem('Rule-based chatbot', icon='', children=[
+					MenuItem("Exercise 6", icon='journal-code'),
+				]), 
+				MenuItem('Prompt Template', icon='', children=[
+					MenuItem("Exercise 7", icon='journal-code'),
+				]), 
+				MenuItem('Integrate OpenAI API', icon='', children=[
+					MenuItem("Exercise 8", icon='journal-code'),
+					MenuItem("Exercise 9", icon='journal-code'),
+				]),
+			MenuItem('Chat with Memory', icon='', children=[
+					MenuItem("Exercise 10", icon='journal-code'),
+				]), 
+			MenuItem('Integrate PALM API', icon='', children=[
+					MenuItem("Exercise 11", icon='journal-code'),
+				]), 
+			MenuItem('Vector Store', icon='', children=[
+					MenuItem("Exercise 12", icon='journal-code'),
+					MenuItem("Exercise 13", icon='journal-code'),
+				]), 
+			MenuItem('Integrate Vertex AI', icon='', children=[
+					MenuItem("Exercise 14", icon='journal-code'),
+					MenuItem("Exercise 15", icon='journal-code'),
+				]), 
+			MenuItem(type='divider',dashed=True),],open_all=True, index=1)
+
+		clear_session = st.button("**Clear Chat Memory**")
+		if clear_session: 
+			st.session_state.memory.clear()
+			st.session_state.msg.clear()
+			st.success("you chat memory is cleared")
+
+	if opt == 'Workshop Template': workshop_template()
+	elif opt == 'Exercise 1': ex1()
+	elif opt == 'Exercise 2': ex2()
+	elif opt == 'Exercise 3': ex3()
+	elif opt == 'Exercise 4': ex4()
+	elif opt == 'Exercise 5': ex5()
+	elif opt == 'Exercise 6': ex6()
+	elif opt == 'Exercise 7':
+		with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
+		prompt_inputs_form()
+	elif opt == 'Exercise 8': ex8()
+	elif opt == 'Exercise 9': ex9()
+	elif opt == 'Exercise 10': ex10()
+	elif opt == 'Exercise 11': ex11()
+	elif opt == 'Exercise 12': ex12()
+	elif opt == 'Exercise 13': ex13()
+	elif opt == 'Exercise 14': ex14()
+	elif opt == 'Exercise 15': ex15()
+	else: workshop_template()
+
+# workshop template for main.py
+def workshop_template():
+	st.subheader("Workshop Template")
+	with st.expander("", expanded=True): 
+		st.code(mc.code_template, language='python')
+
+# Exercise 1 : Hello World and Input
 def ex1():
 	with st.expander("Reveal Code"): st.code(mc.code_ex1, language='python')
-	st.subheader("My First Application", divider='rainbow')
-	query = st.text_input("say something")
-	if query:
-		st.write("**You entered:**   " + query)
+	st.subheader("**Hello World**", divider='rainbow')
+	name = st.text_input("Enter your name")
+	# only prints the Hello {name} if input box is not empty
+	if name:
+		st.write("Hello " + name)
 
 
 # Exercise 2: radio button
@@ -30,73 +102,10 @@ def ex2():
 
 # Exercise 3: sidebar
 def ex3():
-	# with st.expander("Reveal Code"): st.code(mc.code_ex3, language='python')
-	clear_session = st.sidebar.button("**Clear Session**")
-	if clear_session: 
-		st.session_state.clear()
-		print("you session is cleared")
-   	
-	functions = [
-	   			"Exercise 1", 
-				"Exercise 2",
-	   			"Exercise 3", 
-				"Exercise 4",
-	   			"Exercise 5", 
-				"Exercise 6",
-	   			"Exercise 7", 
-				"Exercise 8",
-	   			"Exercise 9", 
-				"Exercise 10",
-				"Exercise 11",
-				"Exercise 12",
-				"Exercise 13",
-				"Exercise 14",
-				"Exercise 15",
-			]
- 
-	opt = st.sidebar.radio(
-	  		label=":rainbow[Select a Function]",
-			options=functions,
-			captions = [
-				"Stremlit Input Output and Variables",	#1
-				"Stremlit Radio Button",	#2
-				"Stremlit Sidebar",	#3
-				"Stremlit Chat Elements",	#4
-				"Stremlit Upload Documents",	#5
-				"Rule-based Echo Chatbot ",	#6
-				"Stremlit Prompt Input Form",	#7
-				"Chatbot using OpenAI API",	#8
-				"Chatbot using OpenAI Stream API",	#9
-				"Chatbot with Memory",	#10
-				"Chatbot using PALM API",	#11   
-				"LanceDB for VectorStore",	#12
-				"Pinecone for VectorStore",	#13
-				"Chatbot using Vertex AI",	#14
-				"Chatbot using Vertex AI Stream API"	#15    
-			], 
-   			horizontal=False)
+	st.subheader("Sidebar to navigate exercises")
+	with st.expander("Reveal Code"): 
+		st.code(mc.code_ex3, language='python')
 
-	if opt == 'Exercise 1': ex1()
-	elif opt == 'Exercise 2': ex2()
-	elif opt == 'Exercise 3':
-		with st.expander("Reveal Code"): st.code(mc.code_ex3, language='python')
-		st.write("Sidebar on Your Left")
-	elif opt == 'Exercise 4': ex4()
-	elif opt == 'Exercise 5': ex5()
-	elif opt == 'Exercise 6': ex6()
-	elif opt == 'Exercise 7':
-		with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
-		prompt_inputs_form()
-	elif opt == 'Exercise 8': ex8()
-	elif opt == 'Exercise 9': ex9()
-	elif opt == 'Exercise 10': ex10()
-	elif opt == 'Exercise 11': ex11()
-	elif opt == 'Exercise 12': ex12()
-	elif opt == 'Exercise 13': ex13()
-	elif opt == 'Exercise 14': ex14()
-	elif opt == 'Exercise 15': ex15()
-	else: ex1()
- 
 
 # Exercise 4: chat elements
 def ex4():
@@ -114,7 +123,6 @@ def ex4():
 		other_message.write("I'm nobody")
 
 		st.chat_message("user", avatar="👩‍🎤").write("I'm user")
-		st.chat_message('bot', avatar="🤖").write("I'm bot!")
 
 		st.chat_message('PA assistant', avatar='./avatar.png').write("Hi, I'm PA assistant")
   
@@ -137,8 +145,8 @@ def display_uploaded_files():
 	filelist=[]
 	for root, dirs, files in os.walk(UPLOAD_DIRECTORY):
 		for file in files:
-				#filename=os.path.join(root, file)
-				filelist.append(file)
+			#filename=os.path.join(root, file)
+			filelist.append(file)
 	st.write(f"You have the following files uploaded under **{UPLOAD_DIRECTORY}**")
 	st.write(filelist)
 
@@ -154,8 +162,7 @@ def is_valid_file(file):
 def ex5():
 	with st.expander("Reveal Code"): st.code(mc.code_ex5, language='python')
 	# File upload section
-	uploaded_file = st.file_uploader("Upload a file", 
-									 type=allowed_extensions)
+	uploaded_file = st.file_uploader("Upload a file", type=allowed_extensions)
 
 	if uploaded_file is not None:
 		if is_valid_file(uploaded_file):
@@ -205,14 +212,19 @@ def ex6():
 def prompt_inputs_form():  
 	# with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
 	with st.form("Prompt Template"):
-		my_prompt_template = st.text_input("Enter a system prompt template. E.g. You are public officer of Singapore.")
-		# Every form must have a submit button.
+		my_prompt_template = st.text_input("Enter a system prompt template. E.g. Reply in Singlish.")
+
 		submitted = st.form_submit_button("Submit")
-		# return a dictionary of the values
 		if submitted:
 			st.session_state.prompt_template = my_prompt_template
-			print(f"you session_state for prompt_template is set to <{my_prompt_template}>")
+			st.success(f"""you session_state.prompt_template is set to: 
+				**'{my_prompt_template}'**""")
 			return st.session_state.prompt_template
+
+		# display session_state.prompt_template if any
+		if st.session_state.prompt_template:
+			st.write("**your session_state.prompt_template is set to:**")
+			st.write(st.session_state.prompt_template)
 
 
 # Exercise 8 : Using the OpenAI API
@@ -228,7 +240,7 @@ def openai_completion(prompt):
 			{"role": "system", "content": st.session_state.prompt_template},
 			{"role": "user", "content": prompt},
 		],
-		temperature=0,  # temperature
+		temperature=0.5,  # temperature between 0 and 1. The higher the temperature, the more random the results
 	)
 	return response
 
@@ -246,7 +258,10 @@ def ex8():
 
 	# Display chat messages from history on app rerun
 	for message in st.session_state.msg:
-		st.chat_message(message["role"]).markdown(message["content"])
+		if message["role"]=='assistant':
+			st.chat_message(message["role"], avatar='./avatar.png').markdown(message["content"])
+		else:
+			st.chat_message(message["role"]).markdown(message["content"])
 
 	# React to user input
 	if prompt := st.chat_input("What is up?"):
@@ -261,7 +276,7 @@ def ex8():
 		total_tokens = str(response_raw["usage"]["total_tokens"])
   
 		# Display assistant response in chat message
-		st.chat_message("assistant").markdown(response)
+		st.chat_message("assistant", avatar='./avatar.png').markdown(response)
 		c = st.empty()
 		c.markdown(f"**Total tokens used in last converstation:** {total_tokens}")
   
@@ -270,16 +285,18 @@ def ex8():
 
 
 # Exercise 9 : Using the OpenAI API with streaming option
-def openai_completion_stream(prompt):
+def openai_completion_stream(query, prompt_template = st.session_state.prompt_template):
 	MODEL = "gpt-3.5-turbo"
 	response = openai.ChatCompletion.create(
 		model=MODEL,
 		messages=[
-			{"role": "system", "content": st.session_state.prompt_template},
-			{"role": "user", "content": prompt},
+			{"role": "system", "content": prompt_template},
+			{"role": "user", "content": query},
 		],
-		temperature=0,  # temperature
-		stream=True,  # stream option
+		temperature=0,
+		stream=True, 
+		# stream the results from the ChatGPT API as they were generated, 
+  		# rather than waiting for the entire thing to complete before displaying anything.
 	)
 	return response
 
@@ -300,17 +317,17 @@ def ex9():
 		with st.chat_message(message["role"]):
 			st.markdown(message["content"])
 
-	if prompt := st.chat_input("say something"):
+	if query := st.chat_input("say something"):
 		# set user prompt in chat history
-		st.session_state.msg.append({"role": "user", "content": prompt})
+		st.session_state.msg.append({"role": "user", "content": query})
 		with st.chat_message("user"):
-			st.markdown(prompt)
+			st.markdown(query)
 
 		with st.chat_message("assistant"):
 			message_placeholder = st.empty()
 			full_response = ""
 			# streaming function
-			for response in openai_completion_stream(prompt):
+			for response in openai_completion_stream(query):
 				full_response += response.choices[0].delta.get("content", "")
 				message_placeholder.markdown(full_response + "▌")
 			message_placeholder.markdown(full_response)
@@ -325,22 +342,18 @@ def ex10():
 	with st.expander("Reveal Code"): st.code(mc.code_ex10, language='python')
 	st.subheader("Chatbot with Memory", divider='rainbow')
 	
-	# call prompt_inputs_form to get newly submitted prompt template
-	input_prompt = prompt_inputs_form()
-	if pd.isnull(input_prompt):
-		input_prompt = "You are a helpful assistant"
+	# display prompt_inputs_form in case user want to set a new prompt template
+	prompt_inputs_form()
 
-	if "memory" not in st.session_state: # 3 means that the bot remember the last 3-rounds of converstaions
+	if "memory" not in st.session_state: # k=3 means that the bot remember the last 3-rounds of converstaions
 		st.session_state.memory = ConversationBufferWindowMemory(k=3) 
 
 	# step 1 save the memory from your chatbot
 	memory_data = st.session_state.memory.load_memory_variables({})
-	st.write("**Instruction Prompt Setup**: ", input_prompt)
-	st.write("**Memory Data**: ", memory_data)
  
-	# step 2 integrate the memory in the prompt_template (st.session_state.prompt_template) show a hint
-	st.session_state.prompt_template = f"""
-{input_prompt}										
+	# step 2 combine the memory with the prompt_template show a hint
+	st.session_state.prompt_template_with_memory = f"""
+{st.session_state.prompt_template}										
 
 Below is the conversation history between the AI and Users so far
 
@@ -357,29 +370,28 @@ Below is the conversation history between the AI and Users so far
 		st.chat_message(message["role"]).markdown(message["content"])
   
 	try:
-		if prompt := st.chat_input("say something?"):
+		if query := st.chat_input("say something?"):
 			# set user prompt in chat history
-			st.session_state.msg.append({"role": "user", "content": prompt})
+			st.session_state.msg.append({"role": "user", "content": query})
 			with st.chat_message("user"):
-				st.markdown(prompt)
+				st.markdown(query)
 
 			with st.chat_message("assistant"):
 				message_placeholder = st.empty()
 				full_response = ""
 				# streaming function
-				for response in openai_completion_stream(prompt):
+				for response in openai_completion_stream(query, st.session_state.prompt_template_with_memory):
 					full_response += response.choices[0].delta.get("content", "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
 			st.session_state.msg.append({"role": "assistant", "content": full_response})
-			st.session_state.memory.save_context(
-				{"input": prompt}, {"output": full_response}
-			)
+			st.session_state.memory.save_context({"input": query}, {"output": full_response})
+		st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
 	except Exception as e:
 		st.error(e)
 
 
-# Exercise 11: Using PALM API (without stream)
+# Exercise 11: Using PALM API
 import google.generativeai as palm
 # set the PALM API key.
 os.environ["PALM_API_KEY"] = st.secrets["palm_api_key"]
@@ -424,21 +436,17 @@ def ex11():
 from langchain.embeddings import GooglePalmEmbeddings
 from langchain.vectorstores import LanceDB
 import lancedb
-from langchain.document_loaders import DirectoryLoader
 from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
 def lance_vectorstore_creator():
-	loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader, show_progress=True)
+	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
+	# loader = PyPDFLoader(f"{os.getcwd}/uploaded_files/*.pdf")
 	documents = loader.load()
-	# loader = PyPDFLoader(f"{UPLOAD_DIRECTORY}"/*.pdf")
-	# documents = loader.load_and_split()
-
 	# chunk size refers to max no. of chars, not tokens
-	text_splitter = RecursiveCharacterTextSplitter(
-		separators=['\n\n'],
+	text_splitter = CharacterTextSplitter(
+		separator = '\n\n',
 		chunk_size=200, 
 		chunk_overlap=0
 	)
@@ -516,11 +524,11 @@ from langchain.vectorstores import Pinecone
 import pinecone
 
 def pinecone_indexing(index_name):
-	loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader, show_progress=True)
+	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
 	documents = loader.load()
 	# chunk size refers to max no. of chars, not tokens
-	text_splitter = RecursiveCharacterTextSplitter(
-		separators=['\n\n'], 
+	text_splitter = CharacterTextSplitter(
+		separator = "\n\n", 
 		chunk_size=200, 
 		chunk_overlap=0
   	)
@@ -625,23 +633,18 @@ vertex_chat = ChatVertexAI(
 def ex14():
 	with st.expander("Reveal Code"): st.code(mc.code_ex14, language='python')
 	st.subheader("Chatbot using Vertex AI", divider="rainbow")
-	# Initialize chat history
-	# call prompt_inputs_form to get newly submitted prompt template
-	input_prompt = prompt_inputs_form()
-	if pd.isnull(input_prompt):
-		input_prompt = "You are a helpful assistant"
+	# display prompt_inputs_form for user to set new prompt template
+	prompt_inputs_form()
 
-	if "memory" not in st.session_state: # 3 means that the bot remember the last 3-rounds of converstaions
-		st.session_state.memory = ConversationBufferWindowMemory(k=1) 
+	if "memory" not in st.session_state: # k=3 means that the bot remember the last 3-rounds of converstaions
+		st.session_state.memory = ConversationBufferWindowMemory(k=3) 
 
 	# step 1 save the memory from your chatbot
 	memory_data = st.session_state.memory.load_memory_variables({})
-	st.write("**Instruction Prompt Setup**: ", input_prompt)
-	st.write("**Memory Data**: ", memory_data)
  
-	# step 2 integrate the memory in the prompt_template (st.session_state.prompt_template) show a hint
-	st.session_state.prompt_template = f"""
-{input_prompt}										
+	# step 2 combine the memory with the prompt_template 
+	st.session_state.prompt_template_with_memory = f"""
+{st.session_state.prompt_template}										
 
 Below is the conversation history between the AI and Users so far
 
@@ -658,44 +661,38 @@ Below is the conversation history between the AI and Users so far
 	for message in st.session_state.msg:
 		st.chat_message(message["role"]).markdown(message["content"])
 
-	if prompt := st.chat_input("What is up?"):
+	if query := st.chat_input("What is up?"):
 		# set user prompt in chat history
-		st.session_state.msg.append({"role": "user", "content": prompt})
-		st.chat_message("user").markdown(prompt)
+		st.session_state.msg.append({"role": "user", "content": query})
+		st.chat_message("user").markdown(query)
 
 		with st.chat_message("assistant"):
 			message_placeholder = st.empty()
-			full_response = vertex_chat([SystemMessage(content=st.session_state.prompt_template) ,HumanMessage(content=prompt)]) # further improve https://python.langchain.com/docs/integrations/chat/google_vertex_ai_palm
+			full_response = vertex_chat([SystemMessage(content=st.session_state.prompt_template_with_memory), HumanMessage(content=query)]) # further improve https://python.langchain.com/docs/integrations/chat/google_vertex_ai_palm
 			message_placeholder.markdown(full_response.content)
 		
 		st.session_state.msg.append({"role": "assistant", "content": full_response.content})
-		st.session_state.memory.save_context(
-			{"input": prompt}, {"output": full_response.content}
-		)
+		st.session_state.memory.save_context({"input": query}, {"output": full_response.content})
+	st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
 
 
 # Exercise 15: Using VertexAI stream
 # integration strem API call into chat components
 def ex15():
 	with st.expander("Reveal Code"): st.code(mc.code_ex15, language='python')
-	st.subheader("Chatbot using Vertex AI with Streaming", divider='rainbow')
-	# Initialize chat history
-	# call prompt_inputs_form to get newly submitted prompt template
-	input_prompt = prompt_inputs_form()
-	if pd.isnull(input_prompt):
-		input_prompt = "You are a helpful assistant"
+	st.subheader("Chatbot using Vertex AI Stream API", divider='rainbow')
+	# display prompt_inputs_form for the user to set new prompt template
+	prompt_inputs_form()
 
-	if "memory" not in st.session_state: # 3 means that the bot remember the last 3-rounds of converstaions
-		st.session_state.memory = ConversationBufferWindowMemory(k=1) 
+	if "memory" not in st.session_state: # k=3 means that the bot remember the last 3-rounds of converstaions
+		st.session_state.memory = ConversationBufferWindowMemory(k=3) 
 
 	# step 1 save the memory from your chatbot
 	memory_data = st.session_state.memory.load_memory_variables({})
-	st.write("**Instruction Prompt Setup**: ", input_prompt)
-	st.write("**Memory Data**: ", memory_data)
  
-	# step 2 integrate the memory in the prompt_template (st.session_state.prompt_template) show a hint
-	st.session_state.prompt_template = f"""
-{input_prompt}										
+	# step 2 combine the memory with the prompt_template
+	st.session_state.prompt_template_with_memory = f"""
+{st.session_state.prompt_template}										
 
 Below is the conversation history between the AI and Users so far
 
@@ -703,7 +700,6 @@ Below is the conversation history between the AI and Users so far
 
 """
 
-	# call the function in your base bot
 	# Initialize chat history
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
@@ -712,24 +708,24 @@ Below is the conversation history between the AI and Users so far
 	for message in st.session_state.msg:
 		st.chat_message(message["role"]).markdown(message["content"])
 
-	if prompt := st.chat_input("say something"):
+	if query := st.chat_input("say something"):
 		# set user prompt in chat history
-		st.session_state.msg.append({"role": "user", "content": prompt})
+		st.session_state.msg.append({"role": "user", "content": query})
 		with st.chat_message("user"):
-			st.markdown(prompt)
+			st.markdown(query)
    
 		with st.chat_message("assistant"):
 			message_placeholder = st.empty()
 			full_response = ""
-			for response in vertex_chat.stream([SystemMessage(content=st.session_state.prompt_template) ,HumanMessage(content=prompt)]):
+			for response in vertex_chat.stream([SystemMessage(content=st.session_state.prompt_template_with_memory) ,HumanMessage(content=query)]):
 				full_response += response.content
 				message_placeholder.markdown(full_response + "▌")
 			message_placeholder.markdown(full_response)
 
 		st.session_state.msg.append({"role": "assistant", "content": full_response})
-		st.session_state.memory.save_context(
-			{"input": prompt}, {"output": full_response}
-		)
+		st.session_state.memory.save_context({"input": query}, {"output": full_response})
+	st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
+
 
 from streamlit_antd_components import divider 
 def main():
@@ -738,7 +734,7 @@ def main():
 		layout="wide",
 	) 
 
-	st.title("Hands-on Workshops 2023")
+	st.title("Hands-on Workshops 2023")	
 	divider(label='Exploring Generative AI: Codecraft Workshop', icon='journal-code', align='left')
 
 	if "prompt_template" not in st.session_state:
@@ -749,11 +745,10 @@ def main():
 
 	if st.session_state.pwd_input == st.secrets['workshop_pwd']:
 		password_container.empty()
-		ex3()
+		workshop_sidebar()
 	elif st.session_state.pwd_input!='' and st.session_state.pwd_input != st.secrets['workshop_pwd']:
 		st.error("Incorrect password. Please enter the correct password to proceed.")
 
 
 if __name__ == "__main__":
 	main()
-
