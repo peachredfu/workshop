@@ -296,6 +296,8 @@ def ex8():
 
 code_ex9 = '''
 # Exercise 9 : Using the OpenAI API with streaming option
+if "prompt_template" not in st.session_state:
+	st.session_state.prompt_template = "You are a helpful assistant" 
 def openai_completion_stream(query, prompt_template = st.session_state.prompt_template):
 	MODEL = "gpt-3.5-turbo"
 	response = openai.ChatCompletion.create(
@@ -739,4 +741,3 @@ Below is the conversation history between the AI and Users so far
 	st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
 
 '''
-
