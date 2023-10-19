@@ -7,11 +7,23 @@ import streamlit as st
 
   
 def main():
-    if "prompt_template" not in st.session_state:
-        st.session_state.prompt_template = "You are a helpful assistant"
+	if "prompt_template" not in st.session_state:
+		st.session_state.prompt_template = "You are a helpful assistant"
+	if "memory" not in st.session_state:
+		st.session_state.memory = ConversationBufferWindowMemory(k=1)
+	if "msg" not in st.session_state:
+		st.session_state.msg = []
+	# initialize vectorstore in session_state
+	if "TBLdate" not in st.session_state:
+		st.session_state.TBLdate = False
+	if "lance_vs" not in st.session_state:
+		st.session_state.lance_vs = False
+	if "pinecone_vs" not in st.session_state:
+		st.session_state.pinecone_vs = False
 
-    # put function name here
-    
+	# put function name here
+
+	
 if __name__ == "__main__":
 	main()
 '''
@@ -63,8 +75,7 @@ def ex3():
 	   			"Exercise 9", 
 				"Exercise 10",
 				"Exercise 11",
-				"Exercise 12",
-				"Exercise 13",
+				"Exercise 12&13",
 				"Exercise 14",
 				"Exercise 15",
 			]
@@ -84,8 +95,7 @@ def ex3():
 				"Chatbot using OpenAI Stream API",	#9
 				"Chatbot with Memory",	#10
 				"Chatbot using PALM API",	#11   
-				"LanceDB for VectorStore",	#12
-				"Pinecone for VectorStore",	#13
+				"VectorStore and RAG",	#12	#13
 				"Chatbot using Vertex AI",	#14
 				"Chatbot using Vertex AI Stream API"	#15    
 			], 
@@ -102,8 +112,7 @@ def ex3():
 	elif opt == 'Exercise 9': ex9()
 	elif opt == 'Exercise 10': ex10()
 	elif opt == 'Exercise 11': ex11()
-	elif opt == 'Exercise 12': ex12()
-	elif opt == 'Exercise 13': ex13()
+	elif opt == 'Exercise 12&13': ex12_and_ex13()
 	elif opt == 'Exercise 14': ex14()
 	elif opt == 'Exercise 15': ex15()
 	else: ex1()
@@ -155,7 +164,8 @@ def display_uploaded_files():
 		for file in files:
 			#filename=os.path.join(root, file)
 			filelist.append(file)
-	st.write(f"You have the following files uploaded under **{UPLOAD_DIRECTORY}**")
+	st.write(f"#### You have the following files uploaded")
+	st.write({UPLOAD_DIRECTORY})
 	st.write(filelist)
 
 # Function to check if the file is valid
@@ -348,7 +358,6 @@ def ex9():
 
 code_ex10 = '''
 # Exercise 10: Chatbot with memory
-import pandas as pd
 from langchain.memory import ConversationBufferWindowMemory
 def ex10():
 	st.title("Chatbot with Memory")
@@ -361,7 +370,7 @@ def ex10():
 	# step 1 save the memory from your chatbot
 	memory_data = st.session_state.memory.load_memory_variables({})
  
-	# step 2 combine the memory with the prompt_template show a hint
+	# step 2 combine the memory with the prompt_template
 	st.session_state.prompt_template_with_memory = f"""
 {st.session_state.prompt_template}										
 
@@ -444,169 +453,254 @@ def ex11():
 '''
 
 code_ex12 = '''
-# Exercise 12: LanceDB for Text Embeddings and Similarity Search
+# Exercise 12: RAG chatbot supported by LanceDB and OpenAI
+from langchain.embeddings import OpenAIEmbeddings
 from langchain.embeddings import GooglePalmEmbeddings
 from langchain.vectorstores import LanceDB
 import lancedb
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+# from langchain.document_loaders import PyPDFDirectoryLoader
+from langchain.document_loaders import DirectoryLoader
 from langchain.document_loaders import TextLoader
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.document_loaders import PyPDFLoader
+from langchain.prompts import PromptTemplate
+
+openaiembedding = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
-def lance_vectorstore_creator():
-	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
-	# loader = PyPDFLoader(f"{os.getcwd}/uploaded_files/*.pdf")
+UPLOAD_DIRECTORY = os.path.join(os.getcwd(), "UPLOADED")
+DB_DIRECTORY = os.path.join(os.getcwd(), "LanceDB") # define LanceDB directory 
+TABLE_NAME = "my_table" # LanceDB table name
+TBL_DIRECTORY = os.path.join(DB_DIRECTORY, TABLE_NAME+'.lance')
+TARGET_DOC_TYPE = "TXT"
+openaiembedding = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
+palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
+
+def document_loader():
+	if TARGET_DOC_TYPE=="TXT":
+		loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader)
+	elif TARGET_DOC_TYPE=='PDF':
+		loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.pdf", loader_cls=PyPDFLoader)
+	else:
+		return None
+
 	documents = loader.load()
-	# chunk size refers to max no. of chars, not tokens
-	text_splitter = CharacterTextSplitter(
-    	separator = "\n\n",
-    	chunk_size=200, 
-    	chunk_overlap=0
-    )
-
-	documents = text_splitter.split_documents(documents)
- 
-	# Create a folder for VectorDB, and create only when it doesn't exist
-	DB_DIRECTORY = os.path.join(os.getcwd(), "LanceDB")
-	os.makedirs(DB_DIRECTORY, exist_ok=True)
-	TABLE_NAME = "my_table"
-	TBL_DIRECTORY = os.path.join(DB_DIRECTORY, TABLE_NAME+'.lance')
-
-	db = lancedb.connect(DB_DIRECTORY)
-	table = db.create_table(
-		TABLE_NAME,
-		data=[
-			{
-				"vector": palmembeddings.embed_query("Hello World"),
-				"text": "Hello World",
-				"id": "1",
-			}
-		],
-		mode="overwrite",
+	# recursively tries to split by different characters to find one that works
+	text_splitter = RecursiveCharacterTextSplitter(
+		separators=['\n\n'],
+		chunk_size=300, 
+		chunk_overlap=0
 	)
-	db = LanceDB.from_documents(documents, palmembeddings, connection=table)
-	get_TableUpdateDate(TBL_DIRECTORY)
-	st.success(f"LanceDB Table last update @ {st.session_state.TBLdate}")
-	return db
+	documents = text_splitter.split_documents(documents)
+	return documents
+
+def lance_vectorstore_creator():
+	documents = document_loader()
+	#documents = document_loader(type='PDF')
+	if documents:
+		# Create a folder for VectorDB, and create only when it doesn't exist
+		os.makedirs(DB_DIRECTORY, exist_ok=True)
+		db = lancedb.connect(DB_DIRECTORY)
+		table = db.create_table(
+			TABLE_NAME,
+			data=[
+				{
+					"vector": openaiembedding.embed_query("Hello World"),
+					"text": "Hello World",
+					"id": "1",
+				}
+			],
+			mode="overwrite",
+		)
+		db = LanceDB.from_documents(documents, embedding=openaiembedding, connection=table)
+		st.session_state.lance_vs = db
+		return db
+	else:
+		# when document (e.g. othe than TXT and PDF) is not supported
+		st.session_state.lance_vs = False
+		return None
+
 
 from datetime import datetime
-def get_TableUpdateDate(TBL_DIRECTORY):
-	if 'TBLdate' not in st.session_state:
-		st.session_state.TBLdate = "unknown"
-		
+def LanceDB_TableUpdateDate(TBL_DIRECTORY):		
 	if os.path.exists(TBL_DIRECTORY):
 		last_update_timestamp = os.path.getmtime(TBL_DIRECTORY)
 		last_update_date = datetime.fromtimestamp(last_update_timestamp).strftime('%Y-%m-%d %H:%M:%S')
-		print(f"Last update date of DB  '{TBL_DIRECTORY}': {last_update_date}")
+		st.info(f"""Last update date of Your LanceDB  
+{TBL_DIRECTORY}
+
+{last_update_date}
+""")
 		st.session_state.TBLdate = last_update_date
 	else:
-		print(f"The folder '{TBL_DIRECTORY}' does not exist or is not a directory.")
+		st.error(f"<p style='color: red;'>Your LanceDB '{TBL_DIRECTORY}' does NOT exist.</p>", unsafe_allow_html=True)
 
 
-def ex12():
-	st.subheader('LanceDB for VectorStore (by PAML) and Similarity Search', divider='rainbow')
-	
-	# initialize vectorstore in session_state
-	if "lance_vs" not in st.session_state:
-		st.session_state.lance_vs = False
-
-	placeholder = st.empty()
-	with placeholder.container():
-		display_uploaded_files()
-
+def RAG_LanceDB_OpenAI():
+	st.subheader('RAG Chatbot supported by LanceDB and OpenAI', divider='rainbow')
 	# Add a button to create vectorstore
-	lance_vs_btn = st.button('Create/Update VectorStore!')
+	lance_vs_btn = st.button('Create/Update LanceDB VectorStore')
 	if lance_vs_btn:
-		db = lance_vectorstore_creator()
-		st.session_state.lance_vs = db
-  
-	if st.session_state.lance_vs:
-		lance_query = st.text_input("Enter a query")
-		if lance_query:
-			docs = st.session_state.lance_vs.similarity_search(query=lance_query, k=3, embedding = palmembeddings)
-			for doc in docs:
-   				st.write(doc.page_content)
+		lance_vectorstore_creator()
+	# display update date of LanceDB Table
+	LanceDB_TableUpdateDate(TBL_DIRECTORY)
+ 
+	# set prompt template for RAG to include {context} retreived from VectorDB
+	st.session_state.prompt_template_RAG = """
+Use the following pieces of context to answer the question at the end. 
+If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+Use three sentences maximum and keep the answer as concise as possible. 
+{context}
+Question: {question}
+Answer:
+"""	
+	st.markdown(f"#### Your RAG Prompt Template")
+	st.write({st.session_state.prompt_template_RAG})
 
+	input_prompt = PromptTemplate(
+		input_variables=["context", "question"],
+		template=st.session_state.prompt_template_RAG,
+	)
+
+	if st.session_state.lance_vs:
+		vectorstore = st.session_state.lance_vs
+		if query := st.text_input("**RAG1**"):
+			# set user prompt in chat history
+			with st.chat_message("user"):
+				st.markdown(query)
+
+			docs = vectorstore.similarity_search(query=query, k=2)
+			context = " \n".join([doc.page_content for doc in docs])
+
+			input_prompt_formated = input_prompt.format(context=context, question=query)
+			with st.chat_message("system", avatar = "🦜"):
+				st.markdown(input_prompt_formated)
+
+			with st.chat_message("assistant"):
+				message_placeholder = st.empty()
+				full_response = ""
+				# streaming function
+				for response in openai_completion_stream(input_prompt_formated):
+					full_response += response.choices[0].delta.get("content", "")
+					message_placeholder.markdown(full_response + "▌")
+				message_placeholder.markdown(full_response)
+
+
+def ex12_and_ex13():
+	tab1, tab2, tab3 = st.tabs(["Spliting Chunks", "RAG Chatbot 1", "RAG Chatbot 2"])
+	with tab1:
+		display_uploaded_files()
+		st.write(f"#### Your targeted document is **{TARGET_DOC_TYPE}**")
+		documents=document_loader()
+		st.write("**No. of Chunks:**", len(documents))
+		st.write("**Chunk(s):**", documents)
+	with tab2:		
+		RAG_LanceDB_OpenAI()
+	# comment off / uncomment the code when RAG_Pinecone_OpenAI is added from Exercise 13
+	# with tab3:		
+	# 	RAG_Pinecone_OpenAI()
+  
 '''
 
 code_ex13 = '''
-# Exercise 13: Pinecone for Text Embeddings and Similarity Search
-from langchain.document_loaders import TextLoader
-# from langchain.document_loaders import PyPDFLoader
-# from langchain.document_loaders import PyPDFDirectoryLoader
+# Exercise 13: RAG chatbot supported by Pinecone and OpenAI
 from langchain.vectorstores import Pinecone
 import pinecone
 
-def pinecone_indexing(index_name):
-	loader = TextLoader(f"{UPLOAD_DIRECTORY}/tmp.txt")
-	documents = loader.load()
-	# chunk size refers to max no. of chars, not tokens
-	text_splitter = CharacterTextSplitter(
-    	separator = "\n\n", 
-		chunk_size=200, 
-		chunk_overlap=0
-  	)
+pinecone.init(api_key=st.secrets["pinecone_key"], environment="asia-northeast1-gcp")
+vs_index_name = "workshop-vs"
 
-	documents = text_splitter.split_documents(documents)
-
-	dimensions = len(palmembeddings.embed_query("put anything"))
-
+def pinecone_vectorstore_creator(vs_index_name):
+	documents = document_loader()
+	dimensions = len(openaiembedding.embed_query("put anything"))
 	# First, check if our index already exists. If it doesn't, we create it
-	if index_name not in pinecone.list_indexes():
+	if vs_index_name not in pinecone.list_indexes():
 		# we create a new index
 		pinecone.create_index(
-				name=index_name,
+				name=vs_index_name,
 				metric='cosine',
 				dimension=dimensions)
 	else:
-		pinecone.delete_index(index_name) # delete existing before create new
+		pinecone.delete_index(vs_index_name) # delete existing before create new
 		pinecone.create_index(
-				name=index_name,
+				name=vs_index_name,
 				metric='cosine',
 				dimension=dimensions)
 
-	# The PALM embedding model uses 768 dimensions; Create Vector DB
-	Pinecone.from_documents(documents, palmembeddings, index_name=index_name)
-	# connect to index
-	index = pinecone.Index(index_name)
-	text_field = "text"
-	vectorstore = Pinecone(index, palmembeddings, text_field)
-	return vectorstore
-
-def ex13():
-	st.subheader("Pinecone for VectorStore (by PAML) and Similarity Search", divider='rainbow')
-	if "pinecone_vs" not in st.session_state:
+	if documents:
+		# The OpenAI embedding model uses 1536 dimensions; Create Vector DB
+		# The PALM embedding model uses 768 dimensions; Create Vector DB
+		Pinecone.from_documents(documents, openaiembedding, index_name=vs_index_name)
+		# connect to index
+		index = pinecone.Index(vs_index_name)
+		text_field = "text"
+		db = Pinecone(index, openaiembedding, text_field)
+		st.session_state.pinecone_vs = db
+		return db
+	else:
+		# when document (e.g. othe than TXT and PDF) is not supported
 		st.session_state.pinecone_vs = False
+		return None
 
-	placeholder = st.empty()
-	with placeholder.container():
-		display_uploaded_files()
+def RAG_Pinecone_OpenAI():
+	st.subheader("RAG supported by Pinecone and OpenAI", divider='rainbow')
+	if "pinecone_vs" not in st.session_state:
+		st.session_state.pinecone_vs = False 
   
-	pinecone.init(api_key=st.secrets["pinecone_key"], environment="asia-northeast1-gcp")
-	index_name = "workshop-palm"
- 
 	# Add a button to create vectorstore
-	pinecone_vs_btn = st.button('Create/Update VectorStore!')
+	pinecone_vs_btn = st.button('Create/Update Pinecone VectorStore')
 
-	if index_name not in pinecone.list_indexes():
+	if vs_index_name not in pinecone.list_indexes():
 		st.error("pinecone index not exist")
 	else:
-		index = pinecone.Index(index_name)
+		index = pinecone.Index(vs_index_name)
 		text_field = "text"
-		db = Pinecone(index, palmembeddings, text_field)
+		db = Pinecone(index, openaiembedding, text_field)
 		st.session_state.pinecone_vs = db
-		st.success("pinecone index successfully loaded")
+		st.success("pinecone vectorstore successfully loaded")
 
 	if pinecone_vs_btn:
-		db = pinecone_indexing(index_name)
+		db = pinecone_vectorstore_creator(vs_index_name)
 		st.session_state.pinecone_vs = db
-		st.info("pinecone index successfully created/updated")
+		st.info("pinecone vectorstore successfully created/updated")
 
+	# set prompt template for RAG to include {context} retreived from VectorDB
+	st.session_state.prompt_template_RAG = """
+Use the following pieces of context to answer the question at the end. 
+If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+Use three sentences maximum and keep the answer as concise as possible. 
+{context}
+Question: {question}
+Answer:
+"""	
+	st.markdown(f"#### Your RAG Prompt Template")
+	st.write({st.session_state.prompt_template_RAG})
+
+	input_prompt = PromptTemplate(
+		input_variables=["context", "question"],
+		template=st.session_state.prompt_template_RAG,
+	)
 	if st.session_state.pinecone_vs:
-		pinecone_query = st.text_input("Enter a query")
-		if pinecone_query:
-			docs = st.session_state.pinecone_vs.similarity_search(query=pinecone_query, k=3)
-			for doc in docs:
-				st.write(doc.page_content)
+		vectorstore = st.session_state.pinecone_vs
+		if query := st.text_input("**RAG2**"):
+			# set user prompt in chat history
+			with st.chat_message("user"):
+				st.markdown(query)
+			docs = vectorstore.similarity_search(query=query, k=2)
+			context = " \n".join([doc.page_content for doc in docs])
+
+			input_prompt_formated = input_prompt.format(context=context, question=query)
+			with st.chat_message("system", avatar = "🦜"):
+				st.markdown(input_prompt_formated)
+
+			with st.chat_message("assistant"):
+				message_placeholder = st.empty()
+				full_response = ""
+				# streaming function
+				for response in openai_completion_stream(input_prompt_formated):
+					full_response += response.choices[0].delta.get("content", "")
+					message_placeholder.markdown(full_response + "▌")
+				message_placeholder.markdown(full_response)
 
 '''
 
@@ -681,7 +775,7 @@ Below is the conversation history between the AI and Users so far
 
 		with st.chat_message("assistant"):
 			message_placeholder = st.empty()
-			full_response = vertex_chat([SystemMessage(content=st.session_state.prompt_template_with_memory), HumanMessage(content=query)]) # further improve https://python.langchain.com/docs/integrations/chat/google_vertex_ai_palm
+			full_response = vertex_chat([SystemMessage(content=st.session_state.prompt_template_with_memory), HumanMessage(content=query)]) 
 			message_placeholder.markdown(full_response.content)
 		
 		st.session_state.msg.append({"role": "assistant", "content": full_response.content})
@@ -741,3 +835,4 @@ Below is the conversation history between the AI and Users so far
 	st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
 
 '''
+
