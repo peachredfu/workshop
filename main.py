@@ -513,7 +513,7 @@ def LanceDB_TableUpdateDate(TBL_DIRECTORY):
 """)
 		st.session_state.TBLdate = last_update_date
 	else:
-		st.error(f"<p style='color: red;'>Your LanceDB '{TBL_DIRECTORY}' does NOT exist.</p>", unsafe_allow_html=True)
+		st.error(f"Your LanceDB '{TBL_DIRECTORY}' does NOT exist.")
 
 
 def RAG_LanceDB_OpenAI():
