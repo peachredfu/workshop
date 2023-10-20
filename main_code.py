@@ -74,8 +74,8 @@ def ex3():
 				"Exercise 8",
 	   			"Exercise 9", 
 				"Exercise 10",
-				"Exercise 11",
-				"Exercise 12&13",
+				"Exercise 11&12",
+				"Exercise 13",
 				"Exercise 14",
 				"Exercise 15",
 			]
@@ -93,9 +93,9 @@ def ex3():
 				"Prompt Input Form",	#7
 				"Chatbot using OpenAI API",	#8
 				"Chatbot using OpenAI Stream API",	#9
-				"Chatbot with Memory",	#10
-				"Chatbot using PALM API",	#11   
-				"VectorStore and RAG",	#12	#13
+				"Chatbot with Memory",	#10   
+				"VectorStore and RAG",	#11	#12
+				"Chatbot using PALM API",	#13
 				"Chatbot using Vertex AI",	#14
 				"Chatbot using Vertex AI Stream API"	#15    
 			], 
@@ -111,8 +111,8 @@ def ex3():
 	elif opt == 'Exercise 8': ex8()
 	elif opt == 'Exercise 9': ex9()
 	elif opt == 'Exercise 10': ex10()
-	elif opt == 'Exercise 11': ex11()
-	elif opt == 'Exercise 12&13': ex12_and_ex13()
+	elif opt == 'Exercise 11&12': ex11_and_ex12()
+	elif opt == 'Exercise 13': ex13()
 	elif opt == 'Exercise 14': ex14()
 	elif opt == 'Exercise 15': ex15()
 	else: ex1()
@@ -412,50 +412,9 @@ Below is the conversation history between the AI and Users so far
 '''
 
 code_ex11 = '''
-# Exercise 11: Using PALM API (without stream)
-import google.generativeai as palm
-# set the PALM API key.
-os.environ["PALM_API_KEY"] = st.secrets["palm_api_key"]
-palm.configure(api_key=st.secrets["palm_api_key"])
-
-# Call the PALM API and print the response.
-def palm_chat(prompt):
-	response = palm.chat(messages=prompt)
-	print(response.last)
-	return response.last
-
-def ex11():
-	st.title("Chatbot using PALM API")
-	# Initialize chat history
-	if "msg" not in st.session_state:
-		st.session_state.msg = []
-
-	# Showing Chat history
-	for message in st.session_state.msg:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-	try:
-		if prompt := st.chat_input("say something"):
-			# set user prompt in chat history
-			st.session_state.msg.append({"role": "user", "content": prompt})
-			with st.chat_message("user"):
-				st.markdown(prompt)
-
-			with st.chat_message("assistant"):
-				message_placeholder = st.empty()
-				full_response = palm_chat(prompt)
-				message_placeholder.markdown(full_response)
-			st.session_state.msg.append({"role": "assistant", "content": full_response})
-
-	except Exception as e:
-		st.error(e)
-
-'''
-
-code_ex12 = '''
-# Exercise 12: RAG chatbot supported by LanceDB and OpenAI
+# Exercise 11: RAG chatbot supported by LanceDB and OpenAI
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.embeddings import GooglePalmEmbeddings
+# from langchain.embeddings import GooglePalmEmbeddings
 from langchain.vectorstores import LanceDB
 import lancedb
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -466,7 +425,7 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.prompts import PromptTemplate
 
 openaiembedding = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
-palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
+# palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
 UPLOAD_DIRECTORY = os.path.join(os.getcwd(), "UPLOADED")
 DB_DIRECTORY = os.path.join(os.getcwd(), "LanceDB") # define LanceDB directory 
@@ -585,7 +544,7 @@ Answer:
 				message_placeholder.markdown(full_response)
 
 
-def ex12_and_ex13():
+def ex11_and_ex12():
 	tab1, tab2, tab3 = st.tabs(["Spliting Chunks", "RAG Chatbot 1", "RAG Chatbot 2"])
 	with tab1:
 		display_uploaded_files()
@@ -595,14 +554,14 @@ def ex12_and_ex13():
 		st.write("**Chunk(s):**", documents)
 	with tab2:		
 		RAG_LanceDB_OpenAI()
-	# comment off / uncomment the code when RAG_Pinecone_OpenAI is added from Exercise 13
+	# comment off / uncomment the code when RAG_Pinecone_OpenAI is added from Exercise 12
 	# with tab3:		
 	# 	RAG_Pinecone_OpenAI()
   
 '''
 
-code_ex13 = '''
-# Exercise 13: RAG chatbot supported by Pinecone and OpenAI
+code_ex12 = '''
+# Exercise 12: RAG chatbot supported by Pinecone and OpenAI
 from langchain.vectorstores import Pinecone
 import pinecone
 
@@ -700,6 +659,47 @@ Answer:
 					full_response += response.choices[0].delta.get("content", "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
+
+'''
+
+code_ex13 = '''
+# Exercise 13: Using PALM API (without stream)
+import google.generativeai as palm
+# set the PALM API key.
+os.environ["PALM_API_KEY"] = st.secrets["palm_api_key"]
+palm.configure(api_key=st.secrets["palm_api_key"])
+
+# Call the PALM API and print the response.
+def palm_chat(prompt):
+	response = palm.chat(messages=prompt)
+	print(response.last)
+	return response.last
+
+def ex13():
+	st.title("Chatbot using PALM API")
+	# Initialize chat history
+	if "msg" not in st.session_state:
+		st.session_state.msg = []
+
+	# Showing Chat history
+	for message in st.session_state.msg:
+		with st.chat_message(message["role"]):
+			st.markdown(message["content"])
+	try:
+		if prompt := st.chat_input("say something"):
+			# set user prompt in chat history
+			st.session_state.msg.append({"role": "user", "content": prompt})
+			with st.chat_message("user"):
+				st.markdown(prompt)
+
+			with st.chat_message("assistant"):
+				message_placeholder = st.empty()
+				full_response = palm_chat(prompt)
+				message_placeholder.markdown(full_response)
+			st.session_state.msg.append({"role": "assistant", "content": full_response})
+
+	except Exception as e:
+		st.error(e)
 
 '''
 
