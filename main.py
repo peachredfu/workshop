@@ -6,7 +6,7 @@ from streamlit_antd_components import menu, MenuItem, divider
 def workshop_sidebar():  
 	with st.sidebar: #options for sidebar
 		opt = menu([
-				MenuItem('Deck', icon='file-slides', href='https://docs.google.com/presentation/d/1yByNzFHWxxmSaudttcrf2Mo0ATx5UpCr/edit?usp=sharing&ouid=104232750497195021523&rtpof=true&sd=true'),
+				MenuItem('Deck', icon='file-slides', href='https://docs.google.com/presentation/d/169KpD9qmabZ00mdAQEawhpPqv1MLMijW6jiPV_nKbLk/edit?usp=sharing'),
 				MenuItem('Workshop Template', icon=''),
 				MenuItem('Intro to Streamlit', icon='', children=[
 					MenuItem("Exercise 1", icon='journal-code'),
@@ -28,13 +28,11 @@ def workshop_sidebar():
 			MenuItem('Chat with Memory', icon='', children=[
 					MenuItem("Exercise 10", icon='journal-code'),
 				]), 
-			MenuItem('Integrate PALM API', icon='', children=[
-					MenuItem("Exercise 11", icon='journal-code'),
-				]), 
 			MenuItem('Vector Store and RAG', icon='', children=[
-					MenuItem("Exercise 12&13", icon='journal-code'),
+					MenuItem("Exercise 11&12", icon='journal-code'),
 				]), 
-			MenuItem('Integrate Vertex AI', icon='', children=[
+			MenuItem('Integrate Google LLM API', icon='', children=[
+					MenuItem("Exercise 13", icon='journal-code'),
 					MenuItem("Exercise 14", icon='journal-code'),
 					MenuItem("Exercise 15", icon='journal-code'),
 				]), 
@@ -59,8 +57,8 @@ def workshop_sidebar():
 	elif opt == 'Exercise 8': ex8()
 	elif opt == 'Exercise 9': ex9()
 	elif opt == 'Exercise 10': ex10()
-	elif opt == 'Exercise 11': ex11()
-	elif opt == 'Exercise 12&13': ex12_and_ex13()
+	elif opt == 'Exercise 11&12': ex11_and_ex12()
+	elif opt == 'Exercise 13': ex13()
 	elif opt == 'Exercise 14': ex14()
 	elif opt == 'Exercise 15': ex15()
 	else: workshop_template()
@@ -390,48 +388,9 @@ Below is the conversation history between the AI and Users so far
 	except Exception as e:
 		st.error(e)
 
-
-# Exercise 11: Using PALM API
-import google.generativeai as palm
-# set the PALM API key.
-os.environ["PALM_API_KEY"] = st.secrets["palm_api_key"]
-palm.configure(api_key=st.secrets["palm_api_key"])
-
-# Call the PALM API and print the response.
-def palm_chat(prompt):
-	response = palm.chat(messages=prompt)
-	print(response.last)
-	return response.last
-
-def ex11():
-	with st.expander("Reveal Code"): st.code(mc.code_ex11, language='python')
-	st.subheader("Chatbot using PALM API", divider='rainbow')
-	# Initialize chat history
-	if "msg" not in st.session_state:
-		st.session_state.msg = []
-
-	# Showing Chat history
-	for message in st.session_state.msg:
-		with st.chat_message(message["role"]):
-			st.markdown(message["content"])
-	try:
-		if prompt := st.chat_input("say something"):
-			# set user prompt in chat history
-			st.session_state.msg.append({"role": "user", "content": prompt})
-			with st.chat_message("user"):
-				st.markdown(prompt)
-
-			with st.chat_message("assistant"):
-				message_placeholder = st.empty()
-				full_response = palm_chat(prompt)
-				message_placeholder.markdown(full_response)
-			st.session_state.msg.append({"role": "assistant", "content": full_response})
-
-	except Exception as e:
-		st.error(e)
 	
 
-# Exercise 12: RAG chatbot supported by LanceDB and OpenAI
+# Exercise 11: RAG chatbot supported by LanceDB and OpenAI
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.embeddings import GooglePalmEmbeddings
 from langchain.vectorstores import LanceDB
@@ -517,7 +476,7 @@ def LanceDB_TableUpdateDate(TBL_DIRECTORY):
 
 
 def RAG_LanceDB_OpenAI():
-	with st.expander("Reveal Code"): st.code(mc.code_ex12, language='python')
+	with st.expander("Reveal Code"): st.code(mc.code_ex11, language='python')
 	st.subheader('RAG Chatbot supported by LanceDB and OpenAI', divider='rainbow')
 	# Add a button to create vectorstore
 	lance_vs_btn = st.button('Create/Update LanceDB VectorStore')
@@ -579,7 +538,7 @@ Answer:
 			# st.session_state.msg.append({"role": "assistant", "content": full_response})
 			# st.session_state.memory.save_context({"input": query}, {"output": full_response})
 
-def ex12_and_ex13():
+def ex11_and_ex12():
 	tab1, tab2, tab3 = st.tabs(["Spliting Chunks", "RAG Chatbot 1", "RAG Chatbot 2"])
 	with tab1:
 		display_uploaded_files()
@@ -589,12 +548,12 @@ def ex12_and_ex13():
 		st.write("**Chunk(s):**", documents)
 	with tab2:		
 		RAG_LanceDB_OpenAI()
-	# comment off / uncomment the code when RAG_Pinecone_OpenAI is added from Exercise 13
+	# comment off / uncomment the code when RAG_Pinecone_OpenAI is added from Exercise 12
 	with tab3:		
 		RAG_Pinecone_OpenAI()
 
 
-# Exercise 13: RAG chatbot supported by Pinecone and OpenAI
+# Exercise 12: RAG chatbot supported by Pinecone and OpenAI
 from langchain.vectorstores import Pinecone
 import pinecone
 
@@ -634,7 +593,7 @@ def pinecone_vectorstore_creator(vs_index_name):
 		return None
 
 def RAG_Pinecone_OpenAI():
-	with st.expander("Reveal Code"): st.code(mc.code_ex13, language='python')
+	with st.expander("Reveal Code"): st.code(mc.code_ex12, language='python')
 	st.subheader("RAG supported by Pinecone and OpenAI", divider='rainbow')
 	if "pinecone_vs" not in st.session_state:
 		st.session_state.pinecone_vs = False 
@@ -696,6 +655,46 @@ Answer:
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
 			# st.session_state.msg.append({"role": "assistant", "content": full_response})
+
+
+# Exercise 13: Using PALM API
+import google.generativeai as palm
+# set the PALM API key.
+os.environ["PALM_API_KEY"] = st.secrets["palm_api_key"]
+palm.configure(api_key=st.secrets["palm_api_key"])
+
+# Call the PALM API and print the response.
+def palm_chat(prompt):
+	response = palm.chat(messages=prompt)
+	print(response.last)
+	return response.last
+
+def ex13():
+	with st.expander("Reveal Code"): st.code(mc.code_ex13, language='python')
+	st.subheader("Chatbot using PALM API", divider='rainbow')
+	# Initialize chat history
+	if "msg" not in st.session_state:
+		st.session_state.msg = []
+
+	# Showing Chat history
+	for message in st.session_state.msg:
+		with st.chat_message(message["role"]):
+			st.markdown(message["content"])
+	try:
+		if prompt := st.chat_input("say something"):
+			# set user prompt in chat history
+			st.session_state.msg.append({"role": "user", "content": prompt})
+			with st.chat_message("user"):
+				st.markdown(prompt)
+
+			with st.chat_message("assistant"):
+				message_placeholder = st.empty()
+				full_response = palm_chat(prompt)
+				message_placeholder.markdown(full_response)
+			st.session_state.msg.append({"role": "assistant", "content": full_response})
+
+	except Exception as e:
+		st.error(e)
 
 
 
