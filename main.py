@@ -6,7 +6,7 @@ from streamlit_antd_components import menu, MenuItem, divider
 def workshop_sidebar():  
 	with st.sidebar: #options for sidebar
 		opt = menu([
-				MenuItem('Deck', icon='file-slides', href='https://docs.google.com/presentation/d/169KpD9qmabZ00mdAQEawhpPqv1MLMijW6jiPV_nKbLk/edit?usp=sharing'),
+				MenuItem('Deck', icon='file-slides', href='https://docs.google.com/presentation/d/1yByNzFHWxxmSaudttcrf2Mo0ATx5UpCr/edit?usp=sharing&ouid=104232750497195021523&rtpof=true&sd=true'),
 				MenuItem('Workshop Template', icon=''),
 				MenuItem('Intro to Streamlit', icon='', children=[
 					MenuItem("Exercise 1", icon='journal-code'),
