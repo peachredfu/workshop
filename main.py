@@ -7,7 +7,7 @@ def workshop_sidebar():
 	with st.sidebar: #options for sidebar
 		opt = menu([
 				MenuItem('Workshop Prep', icon='file-slides', href='https://docs.google.com/document/d/1MHjWBYAahb7KyKO-dXEDnaBF3og7ZA5V/edit?usp=sharing&ouid=104232750497195021523&rtpof=true&sd=true'),
-				MenuItem('Workshop Deck', icon='file-slides', href='https://docs.google.com/presentation/d/169KpD9qmabZ00mdAQEawhpPqv1MLMijW6jiPV_nKbLk/edit?usp=sharing'),
+				MenuItem('Workshop Deck', icon='file-slides', href='https://docs.google.com/presentation/d/1yByNzFHWxxmSaudttcrf2Mo0ATx5UpCr/edit?usp=sharing&ouid=104232750497195021523&rtpof=true&sd=true'),
 				MenuItem('Code Template', icon=''),
 				MenuItem('Intro to Streamlit', icon='', children=[
 					MenuItem("Exercise 1", icon='journal-code'),
@@ -37,7 +37,7 @@ def workshop_sidebar():
 					MenuItem("Exercise 14", icon='journal-code'),
 					MenuItem("Exercise 15", icon='journal-code'),
 				]), 
-			MenuItem(type='divider',dashed=True),],open_all=True, index=1)
+			MenuItem(type='divider',dashed=True),],open_all=True, index=2)
 
 		clear_session = st.button("**Clear Chat Memory**")
 		if clear_session: 
