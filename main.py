@@ -6,8 +6,9 @@ from streamlit_antd_components import menu, MenuItem, divider
 def workshop_sidebar():  
 	with st.sidebar: #options for sidebar
 		opt = menu([
-				MenuItem('Deck', icon='file-slides', href='https://docs.google.com/presentation/d/169KpD9qmabZ00mdAQEawhpPqv1MLMijW6jiPV_nKbLk/edit?usp=sharing'),
-				MenuItem('Workshop Template', icon=''),
+				MenuItem('Workshop Prep', icon='file-slides', href='https://docs.google.com/document/d/1MHjWBYAahb7KyKO-dXEDnaBF3og7ZA5V/edit?usp=sharing&ouid=104232750497195021523&rtpof=true&sd=true'),
+				MenuItem('Workshop Deck', icon='file-slides', href='https://docs.google.com/presentation/d/169KpD9qmabZ00mdAQEawhpPqv1MLMijW6jiPV_nKbLk/edit?usp=sharing'),
+				MenuItem('Code Template', icon=''),
 				MenuItem('Intro to Streamlit', icon='', children=[
 					MenuItem("Exercise 1", icon='journal-code'),
 					MenuItem("Exercise 2", icon='journal-code'),
@@ -44,7 +45,7 @@ def workshop_sidebar():
 			st.session_state.msg.clear()
 			st.success("you chat memory is cleared")
 
-	if opt == 'Workshop Template': workshop_template()
+	if opt == 'Code Template': workshop_code_template()
 	elif opt == 'Exercise 1': ex1()
 	elif opt == 'Exercise 2': ex2()
 	elif opt == 'Exercise 3': ex3()
@@ -61,10 +62,10 @@ def workshop_sidebar():
 	elif opt == 'Exercise 13': ex13()
 	elif opt == 'Exercise 14': ex14()
 	elif opt == 'Exercise 15': ex15()
-	else: workshop_template()
+	else: workshop_code_template()
 
 # workshop template for main.py
-def workshop_template():
+def workshop_code_template():
 	st.subheader("Workshop Template")
 	with st.expander("", expanded=True): 
 		st.code(mc.code_template, language='python')
@@ -827,7 +828,7 @@ Below is the conversation history between the AI and Users so far
 
 
 from streamlit_antd_components import divider 
-def main():
+def main():	
 	st.set_page_config(
 		page_icon="🧊",
 		layout="wide",
