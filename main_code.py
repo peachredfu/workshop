@@ -2,6 +2,8 @@ import streamlit as st
 
 code_template = '''
 import streamlit as st
+from langchain.memory import ConversationBufferWindowMemory
+
 
 # copy-paste excercise code here
 
