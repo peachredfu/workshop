@@ -3,11 +3,12 @@ import streamlit as st
 code_template = '''
 import streamlit as st
 from langchain.memory import ConversationBufferWindowMemory
+import os
 
 
 # copy-paste excercise code here
 
-  
+
 def main():
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
@@ -54,7 +55,7 @@ def ex2():
 	elif llm == '**PALM**':
 		st.write('You selected PALM')
 	else:
-		st.write("You didn\'t select LLM.")
+		st.write("You didn\'t select any LLM options.")
 '''
 
 code_ex3 = '''
@@ -63,18 +64,18 @@ def ex3():
 	clear_session = st.sidebar.button("**Clear Session**")
 	if clear_session: 
 		st.session_state.clear()
-		print("you session is cleared")
-   	
+		print("Your session is cleared.")
+
 	exercises = [
-	   			"Exercise 1", 
+				"Exercise 1", 
 				"Exercise 2",
-	   			"Exercise 3", 
+				"Exercise 3", 
 				"Exercise 4",
-	   			"Exercise 5", 
+				"Exercise 5", 
 				"Exercise 6",
-	   			"Exercise 7", 
+				"Exercise 7", 
 				"Exercise 8",
-	   			"Exercise 9", 
+				"Exercise 9", 
 				"Exercise 10",
 				"Exercise 11&12",
 				"Exercise 13",
@@ -83,14 +84,14 @@ def ex3():
 			]
 
 	opt = st.sidebar.radio(
-	  		label=":rainbow[Select a Function]",
+			label=":rainbow[Select a Function]",
 			options=exercises,
 			captions = [
-				"Stremlit Input Output and Variables",	#1
-				"Stremlit Radio Button",	#2
-				"Stremlit Sidebar",	#3
-				"Stremlit Chat Elements",	#4
-				"Stremlit Upload Documents",	#5
+				"Streamlit Input Output and Variables",	#1
+				"Streamlit Radio Button",	#2
+				"Streamlit Sidebar",	#3
+				"Streamlit Chat Elements",	#4
+				"Streamlit Upload Documents",	#5
 				"Rule-based Echo Chatbot ",	#6
 				"Prompt Input Form",	#7
 				"Chatbot using OpenAI API",	#8
@@ -101,7 +102,7 @@ def ex3():
 				"Chatbot using Vertex AI",	#14
 				"Chatbot using Vertex AI Stream API"	#15    
 			], 
-   			horizontal=False)
+			horizontal=False)
 
 	if opt == 'Exercise 1': ex1()
 	elif opt == 'Exercise 2': ex2()
@@ -134,17 +135,17 @@ def ex4():
 
 		other_message = st.chat_message("whoami")
 		other_message.write("I'm nobody")
-  
+
 		# avatar support a single emoji
 		st.chat_message("user", avatar="👩‍🎤").write("I'm user")
 
 		# avatar support path of a local image file
-		# please go to OnePA website to get image and save to CHATBOT folder
+		# please save PA assistant image to your local CHATBOT folder
 		st.chat_message('PA assistant', avatar='./avatar.png').write("Hi, I'm PA assistant")
 
 		# avatar support URL to fetch the image from
 		st.chat_message('assistant', avatar='https://raw.githubusercontent.com/dataprofessor/streamlit-chat-avatar/master/bot-icon.png').write('Hello world!')
-  
+
 		prompt = st.chat_input("Say something")
 		if prompt:
 			st.chat_message("user").write(f"**You entered**:  {prompt}")
@@ -221,7 +222,7 @@ def ex6():
 			response = "Hi there what can I do for you"
 		else:
 			response = f"Echo: {prompt}"
-   
+
 		# Display assistant response in chat message container
 		st.chat_message("assistant").markdown(response)
 		# Add assistant response to chat history
@@ -239,7 +240,7 @@ def prompt_inputs_form():  # Using st.form, create the starting prompt to your p
 		submitted = st.form_submit_button("Submit")
 		if submitted:
 			st.session_state.prompt_template = my_prompt_template
-			st.success(f"""you session_state.prompt_template is set to: 
+			st.success(f"""your session_state.prompt_template is set to: 
 				**'{my_prompt_template}'**""")
 			return st.session_state.prompt_template
 
@@ -275,7 +276,7 @@ def ex8():
 	st.title("Chatbot using OpenAI API")
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
-  	
+
 	# Initialize chat history
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
@@ -295,12 +296,12 @@ def ex8():
 		response_raw = openai_completion(prompt)
 		response = response_raw["choices"][0]["message"]["content"].strip()
 		total_tokens = str(response_raw["usage"]["total_tokens"])
-  
+
 		# Display assistant response in chat message
 		st.chat_message("assistant").markdown(response)
 		c = st.empty()
 		c.markdown(f"**Total tokens used in last converstation:** {total_tokens}")
-  
+
 		# Add assistant response to chat history
 		st.session_state.msg.append({"role": "assistant", "content": response})
 
@@ -308,20 +309,19 @@ def ex8():
 
 code_ex9 = '''
 # Exercise 9 : Using the OpenAI API with streaming option
-if "prompt_template" not in st.session_state:
-	st.session_state.prompt_template = "You are a helpful assistant" 
-def openai_completion_stream(query, prompt_template = st.session_state.prompt_template):
+
+def openai_completion_stream(query):
 	MODEL = "gpt-3.5-turbo"
 	response = openai.ChatCompletion.create(
 		model=MODEL,
 		messages=[
-			{"role": "system", "content": prompt_template},
+			{"role": "system", "content": st.session_state.prompt_template},
 			{"role": "user", "content": query},
 		],
 		temperature=0,
 		stream=True, 
 		# stream the results from the ChatGPT API as they were generated, 
-  		# rather than waiting for the entire thing to complete before displaying anything.
+		# rather than waiting for the entire thing to complete before displaying anything.
 	)
 	return response
 
@@ -330,7 +330,7 @@ def ex9():
 	st.title("Chatbot using OpenAI Stream API")
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
-  
+
 	# Initialize chat history
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
@@ -389,7 +389,7 @@ Below is the conversation history between the AI and Users so far
 	# Showing Chat history
 	for message in st.session_state.msg:
 		st.chat_message(message["role"]).markdown(message["content"])
-  
+
 	try:
 		if query := st.chat_input("say something?"):
 			# set user prompt in chat history
@@ -559,7 +559,7 @@ def ex11_and_ex12():
 	# comment off / uncomment the code when RAG_Pinecone_OpenAI is added from Exercise 12
 	# with tab3:		
 	# 	RAG_Pinecone_OpenAI()
-  
+
 '''
 
 code_ex12 = '''
@@ -606,7 +606,7 @@ def RAG_Pinecone_OpenAI():
 	st.subheader("RAG supported by Pinecone and OpenAI", divider='rainbow')
 	if "pinecone_vs" not in st.session_state:
 		st.session_state.pinecone_vs = False 
-  
+
 	# Add a button to create vectorstore
 	pinecone_vs_btn = st.button('Create/Update Pinecone VectorStore')
 
@@ -836,4 +836,3 @@ Below is the conversation history between the AI and Users so far
 	st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
 
 '''
-
