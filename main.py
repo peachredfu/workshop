@@ -3,6 +3,7 @@ import os
 import main_code as mc
 from streamlit_antd_components import menu, MenuItem, divider
 
+
 def workshop_sidebar():  
 	with st.sidebar: #options for sidebar
 		opt = menu([
@@ -23,6 +24,7 @@ def workshop_sidebar():
 					MenuItem("Exercise 7", icon='journal-code'),
 				]), 
 				MenuItem('Integrate OpenAI API', icon='', children=[
+					MenuItem("Secrets", icon='journal-code'),        
 					MenuItem("Exercise 8", icon='journal-code'),
 					MenuItem("Exercise 9", icon='journal-code'),
 				]),
@@ -52,9 +54,10 @@ def workshop_sidebar():
 	elif opt == 'Exercise 4': ex4()
 	elif opt == 'Exercise 5': ex5()
 	elif opt == 'Exercise 6': ex6()
-	elif opt == 'Exercise 7':
-		with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
-		prompt_inputs_form()
+	elif opt == 'Exercise 7': ex7()
+		# with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
+		# prompt_inputs_form()
+	elif opt == 'Secrets': secrets()  
 	elif opt == 'Exercise 8': ex8()
 	elif opt == 'Exercise 9': ex9()
 	elif opt == 'Exercise 10': ex10()
@@ -64,15 +67,35 @@ def workshop_sidebar():
 	elif opt == 'Exercise 15': ex15()
 	else: workshop_code_template()
 
+#to display after reveal code for each exercise
+def after_reveal_code(codeoutput):
+	st.write("Remember to save your file (press ctrl+s) and refresh your browser after pasting the code.")
+	st.write(" ") 
+	if codeoutput: st.markdown(":orange[Code Output]") 
+ 
+
 # workshop template for main.py
 def workshop_code_template():
 	st.subheader("Workshop Template")
+
 	with st.expander("", expanded=True): 
 		st.code(mc.code_template, language='python')
 
 # Exercise 1 : Hello World and Input
 def ex1():
-	with st.expander("Reveal Code"): st.code(mc.code_ex1, language='python')
+	st.subheader("Exercise 1: Functions")
+	st.write("The code for Hello World is inside what you call a Python function.") #new
+	st.write("The **def main()** function and **if__name__=='__main__'** statement are coding conventions for any Python programme. \n") #new  
+	with st.expander("Reveal Code"):	
+		st.code(mc.code_ex1, language='python')
+	st.write("After pasting the code above, did you correctly include your **ex1()** inside **main()**?") #new  
+	st.write("As this is your first exericse, don't forget to **run** the app by typing the following into the **terminal**") #new
+	st.code('''streamlit run main.py''', language='python') #new
+ 
+	st.write(" ") 
+	st.write("You should see the following behaviour in your browser window:")
+	st.markdown(":orange[Code Output]") #new
+ 
 	st.subheader("**Hello World**", divider='rainbow')
 	name = st.text_input("Enter your name")
 	# only prints the Hello {name} if input box is not empty
@@ -82,7 +105,14 @@ def ex1():
 
 # Exercise 2: radio button
 def ex2():
+	st.subheader("Exercise 2: Radio Button") #new
+	st.write("You can add radio button by using **st.radio()**. It returns a :green[**string value**] of the selected option or :green[**None**] if no option is selected.") #new 
+	st.write("For this exercise, we will do a simple *horizontal (default is vertical)* radio button widget that has :rainbow[rainbow coloured] and **bolded** options with :grey[caption] under each options.")
+	st.write("**st.radio**( <*explanatory short label*>, <*options*>, caption=<*caption to show under each option*>, horizontal=<*true/false*> )")
+
 	with st.expander("Reveal Code"): st.code(mc.code_ex2, language='python')
+ 
+	after_reveal_code(True)
 	st.subheader("Streamlit Radio Button", divider='rainbow')
 	llm = st.radio(
 		"Your preferred LLM",
@@ -99,14 +129,33 @@ def ex2():
 
 # Exercise 3: sidebar
 def ex3():
-	st.subheader("Sidebar to navigate exercises")
+	st.subheader("Exercise 3: Navigational Sidebar")
+	st.write("Let's add interativity to the app by organizing the different exercises into a sidebar using **st.sidebar()**. It returns a :green[**string value**] of the selected option or :green[**None**] if no option is selected.")
+	st.write("For this exercise, we will do a radio button sidebar and also a button to clear the session which will be used in upcoming exercises.")
+	st.write("**st.sidebar.radio**( <*explanatory short label*>, <*elements or options*>, caption=<*caption to show under each option*>)")
+
 	with st.expander("Reveal Code"): 
 		st.code(mc.code_ex3, language='python')
-
+	after_reveal_code(False)
+	st.write("**[Things to note]** The exercises data list (e.g. :green[**Exercise 1**], :green[**Exercise 11&12**]) names must match with the if-else conditional statement (e.g. :green[if opt=='**Exercise 1**'])")
 
 # Exercise 4: chat elements
 def ex4():
+	st.subheader("Exercise 4: Chat Elements")  
+	st.markdown(
+	"""
+	Let's try out the available chat elements and build converational window using:
+	- **st.chat_message()**: a container that lets you insert any Streamlit elements including charts, tables, text and more from the user or assitant. 
+	- **st.chat_input()**: lets you display a chat input that the user has entered. It returns a :green[**string value**] of the user's input or :green[**None**] if the user hasn't sent a message yet.
+	""" 
+	)
+	st.write("For this exercise, we will be displaying chat messages by different authors with customized avatar shown next to the message.")
+	st.write("**st.chat_message**( < *'user'/'assistant'/'custom author name'*>, avatar=<*emoji or image only for user/assistant*>)")
+	st.write("**st.input_message**( < *placeholder text shown when chat input textbox is empty*>)")
+  
 	with st.expander("Reveal Code"): st.code(mc.code_ex4, language='python')
+	after_reveal_code(True)
+ 
 	st.subheader("Streamlit Chat Elements", divider='rainbow')
 	msg_container = st.container()
 	with msg_container:
@@ -158,7 +207,22 @@ def is_valid_file(file):
 
 # uploading component
 def ex5():
+	st.subheader("Exercise 5: Upload File")    
+	st.markdown(
+	"""
+	Let's try uploading file to your working directory using **st.file_uploader()**. For this exercise, we will create a file uploader that will:
+	- accept only **.docx**, **.txt** and **.pdf** extension 
+	- accept only **1 file** at a time (default)
+	- check max file size limit of **10MB** (default is 200MB)
+	- upload file to working directory folder, **UPLOADED**
+	""" 
+	)
+ 
+	st.write("**st.file_uploader**( <*explantory label*>, type=<*array of allowed extensions*>)")
+  
 	with st.expander("Reveal Code"): st.code(mc.code_ex5, language='python')
+	after_reveal_code(True)
+ 
 	# File upload section
 	uploaded_file = st.file_uploader("Upload a file", type=allowed_extensions)
 
@@ -176,8 +240,23 @@ def ex5():
 
 #Exercise 6 : Session State, Rule-based Echo Chatbot 
 def ex6():
+	st.subheader("Exercise 6: Rule-based Echo Chatbot, Session State")
+	st.write("You can finally start building a simple rule-based echo chatbot using chat elements mastered from Exercise 4 and store the messages using **st.session_state**!")
+	st.write("**st.session_state** holds information of the defined variables for a specific user during their entire session (re-runs and across multipage app) on a website or application. E.g. online purchase shopping cart")
+
+	st.markdown(
+	"""
+	For this exercise, we will:
+	- display chat input that user has entered and based on the input, reply with a pre-set message or echo the input using **if-else conditional statement**.
+	- store and display chat messages from history (on app rerun) using **st.session_state** 
+	""" 
+	)
+ 
 	with st.expander("Reveal Code"): st.code(mc.code_ex6, language='python')
+	after_reveal_code(True)
+
 	st.subheader("Rule-based Echo Bot", divider='rainbow')	
+	st.caption("Try entering the rule-based response keyword: '*Hello*' and '*What is up?*'. (Enter the keyword in UPPERCASE and see what happens) ")
 	# Initialize chat history
 	if "messages" not in st.session_state:
 		st.session_state.messages = []
@@ -204,10 +283,28 @@ def ex6():
 		st.chat_message("assistant").markdown(response)
 		# Add assistant response to chat history
 		st.session_state.messages.append({"role": "assistant", "content": response})
-  
+
+
+def ex7():
+	st.subheader("Exercise 7: Session State with User Input")
+	st.write("Now, lets create **prompt_inputs_form()** function that will get the user's input from the textbox and store it in the session state. ")
+
+	st.markdown(
+	"""
+	For this exercise, we will:
+	- Create a form using **st.form()**. Each form must contain a **st.form_submit_button**. A form is a container that organize different elements together (e.g. textbox, radio button). Upon sumission, all element values inside the form will be sent together for further processing. 
+	- Store user input into **st.session_state**. 
+	""" 
+	)	
+ 
+	st.write("The created session state variable (:green[**prompt_template**]) contains input that you have entered. It will be used in **Exercise 10**.")
+	with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
+	after_reveal_code(True)
+	prompt_inputs_form()
 
 # Exercise 7 : prompt input form
 def prompt_inputs_form():  
+    
 	# with st.expander("Reveal Code"): st.code(mc.code_ex7, language='python')
 	with st.form("Prompt Template"):
 		my_prompt_template = st.text_input("Enter a system prompt template. E.g. Reply in Singlish.")
@@ -215,7 +312,7 @@ def prompt_inputs_form():
 		submitted = st.form_submit_button("Submit")
 		if submitted:
 			st.session_state.prompt_template = my_prompt_template
-			st.success(f"""you session_state.prompt_template is set to: 
+			st.success(f"""your session_state.prompt_template is set to: 
 				**'{my_prompt_template}'**""")
 			return st.session_state.prompt_template
 
@@ -223,6 +320,24 @@ def prompt_inputs_form():
 		if st.session_state.prompt_template:
 			st.write("**your session_state.prompt_template is set to:**")
 			st.write(st.session_state.prompt_template)
+
+
+def secrets():
+	st.subheader("Secrets Managment with Streamlit🤫")
+	st.write("Before doing the next few exercises, you will need to hide your API keys (e.g. OpenAI, PALM, Pinecone) or any other credentials/secrets.")
+	st.write("In your **CHATBOT** working directory, create a new folder :red[**.**]**streamlit**.")
+	st.write("Do take note of the **dot** infront of the folder.")
+	st.write("Under the new folder, create a new file **secrets.toml**. This file will be provided during the workshop.")
+	st.write(":blue[**Code**]")
+	st.code(
+     """
+     openai_key="xxxxxx"
+     palm_api_key="xxxxxx"
+     pinecone_key="xxxxxx"
+     """, language="python")
+	st.caption("Replace '**xxxxxxx**' with the API keys accordingly in your **secrets.toml**:")
+	st.write(" ")
+	st.write("Lastly, if you are commiting the code to github, in your **CHATBOT** directory, create a file **.gitignore** and add :green[**.streamlit/**] into it. A .gitignore file specifies intentionally directories/files that Git should ignore.")
 
 
 # Exercise 8 : Using the OpenAI API
@@ -244,7 +359,26 @@ def openai_completion(prompt):
 
 # integration API call into chat components
 def ex8():
+	st.subheader("Exercise 8: Incorporating LLM API (OpenAI) into your chatbot")
+	st.write("Recall in Exercise 6, the rule-based chatbot shows the chat history, get the user chat input and echoes the user chat input back to the user?")
+	st.write("Also recall in Exercise 7, you created a session state variable (**prompt_template**) and stored the input that you have entered inside this session variable?")	
+	st.write("Now, instead of echoing the user input, you will be passing the user **chat input** and **prompt_template** set in Exercise 7 to OpenAI API to generate a response.")
+	st.markdown(
+	"""
+	For this exercise, we will:
+	- Create a new function **openai_completion()** to generate a response from OpenAI based on user chat input. Note that there is a new import statement **import openai**
+	- Call OpenAI LLM API using :green[**openai.ChatCompletion.create()**] inside **openai_completion()**.
+	- Set the :green[**messages**] prarameter for :green[**openai.ChatCompletion.create()**] inside **openai_completion_stream()**.
+		- There are three types of messages corresponding to three roles: system, user, assistant xxxx  
+	- Adjust the LLM :green[**temperature**] parameter. The higher the temperature, the more random the results. (Temperature is between 0 and 1)  
+		- For transformation tasks (extraction, standardization, format conversion, grammar fixes) prefer a temperature of 0 or up to 0.3.   
+		- For writing tasks, you should adjust the temperature higher, closer to 0.5. If you want GPT to be highly creative (for marketing or advertising copy for instance), consider values between 0.7 and 1  
+		- If you want to experiment and create many variations quickly, a high temperature is better. But do note that a very high temperature increases the risk of 'hallucination', meaning that the AI starts selecting words that will make no sense or be offtopic.     
+	""" 
+	)
+
 	with st.expander("Reveal Code"): st.code(mc.code_ex8, language='python')
+	after_reveal_code(True)
 	st.subheader("Chatbot using OpenAI API", divider='rainbow') 
 
 	if "prompt_template" not in st.session_state:
@@ -283,14 +417,15 @@ def ex8():
 
 
 # Exercise 9 : Using the OpenAI API with streaming option
-if "prompt_template" not in st.session_state:
-	st.session_state.prompt_template = "You are a helpful assistant" 
-def openai_completion_stream(query, prompt_template = st.session_state.prompt_template):
+# if "prompt_template" not in st.session_state:
+# 	st.session_state.prompt_template = "You are a helpful assistant" 
+# def openai_completion_stream(query, prompt_template = st.session_state.prompt_template):
+def openai_completion_stream(query):
 	MODEL = "gpt-3.5-turbo"
 	response = openai.ChatCompletion.create(
 		model=MODEL,
 		messages=[
-			{"role": "system", "content": prompt_template},
+			{"role": "system", "content": st.session_state.prompt_template},
 			{"role": "user", "content": query},
 		],
 		temperature=0,
@@ -302,7 +437,18 @@ def openai_completion_stream(query, prompt_template = st.session_state.prompt_te
 
 # integration API call into streamlit chat components
 def ex9():
+	st.subheader("Exercise 9: Building a ChatGPT-like clone with streaming responses")
+	st.write("Now, we will incorporate a streaming response (real-time text generation) from the LLM API into our chatbot to mimic the behaviour of ChatGPT. This will enhance the level of engagement and interaction between the chatbot and the user.")
+	st.markdown(
+	"""
+	For this exercise, we will:
+	- Create a new function **openai_completion_stream()** to generate streaming response from OpenAI based on user input. 
+	- Set the prarameter :green[**stream=True**] for :green[**openai.ChatCompletion.create()**] inside **openai_completion_stream()**.
+	- Handle real-time text generation response in ex9() using **for-loop**. For-loop is a conditonal iterative statement that is used to repeat a specific block of code until a condition is met.
+	""" 
+	)
 	with st.expander("Reveal Code"): st.code(mc.code_ex9, language='python')
+	after_reveal_code(True) 
 	st.subheader("Chatbot using OpenAI Stream API", divider='rainbow')
  
 	if "prompt_template" not in st.session_state:
@@ -312,10 +458,16 @@ def ex9():
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
 
+	# display session_state.prompt_template if any
+	if st.session_state.prompt_template:
+		st.write("**Your :green[session_state.prompt_template] is set to:**", st.session_state.prompt_template)
+		st.caption("Recall in **Exercise 7**, you stored the input you have entered in **session_state.prompt_template**?")
+
 	# Showing Chat history
 	for message in st.session_state.msg:
 		with st.chat_message(message["role"]):
 			st.markdown(message["content"])
+
 
 	if query := st.chat_input("say something"):
 		# set user prompt in chat history
@@ -332,6 +484,7 @@ def ex9():
 				message_placeholder.markdown(full_response + "▌")
 			message_placeholder.markdown(full_response)
 		st.session_state.msg.append({"role": "assistant", "content": full_response})
+		
 
 
 
