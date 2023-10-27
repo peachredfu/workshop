@@ -1,0 +1,85 @@
+About CDC Vouchers Scheme
+1. What is the CDC Vouchers Scheme 2023?
+In January 2023, every Singaporean household can claim $300 in CDCVouchers. This is part of the enhanced support under the AssurancePackage to help cushion the impact of additional Goods & Services Tax(GST) for Singaporean households and the $1.5 billion SupportPackage announced in October 2022. The value of the vouchers will beallocated equally (i.e., $150 each) to be spent at participating heartlandmerchants and hawkers, or at participating supermarkets. SingaporeanHouseholds have until 31 December 2023 to claim and spend theirCDC Vouchers 2023.
+
+
+2. What are the key benefits of signing up?
+With the roll-out of the CDC Vouchers Scheme, participating merchantsand hawkers can expect the following:
+1.Next-day payout*
+2.No Commissions or fees
+3.No need to count physical vouchers
+*Merchant would need to ensure bank account/PayNow proxy(handphone, NRIC or UEN) provided to PA are accurate in order toachieve the reimbursement timeline.
+To enable this, merchants will use the RedeemSG Merchant app toeasily accept vouchers and tally transactions.
+CDC Ambassadors will assist participating merchants and hawkers tosuccessfully onboard the CDC Vouchers Scheme.
+
+
+3. What are the steps to come onboard the scheme?
+There are two (2) key stages of participation:
+1) Stage 1 - Register your interest with
+	a) the CDC Ambassadors, or
+	b) the Digital Ambassadors from the SG Digital Office, or
+	c) register your interest with your CDC.
+2) Stage 2 - A CDC Ambassador will get in touch with you for the signup and onboarding. Training will be provided during the onboardingprocess.
+
+
+4. I was approached by individuals claiming to be Ambassadors forthe CDC Vouchers Scheme. How can I verify that they areauthorised personnel?
+To assist merchants in the registration of interests and onboardingprocess, IMDA's Digital Ambassadors and CDC Ambassadors are deployed island-wide. The IMDA's Digital Ambassadors can beidentified by the uniform and button badge that they will be wearingduring deployment: (Sample of Digital Ambassador's Uniform)
+The CDC Ambassadors can be identified by the official lanyard andbutton badge during deployment as shown below: (Sample of Button Badge worn by Digital Ambassador and CDCAmbassador),(Sample of CDC Ambassador's lanyard)
+
+
+5. How will customers know that they can use the vouchers at myplace of business?
+All participating merchants and hawkers will be featured ongo.gov.sg/cdcvouchers so residents can conveniently search for shopsnearest to them. You are required to prominently display the CDCVoucher decal at their stall / shop front for visibility to customers.
+
+
+6. How can I get more information about the CDC VouchersScheme?
+Please visit the CDC website https://vouchers.cdc.gov.sg
+
+
+Registration for Interested Merchants
+7. How can I register interest to participate in the CDC VouchersScheme?
+Please register your interest with your CDC using the respective CDCforms below. To find out which CDC your stall falls under, please key inyour postal code using the
+district locator. An officer will be in touch withyou within 14 calendar days upon submission of the form on the statusof your registration.
+Central Singapore CDC https://go.gov.sg/csmerchantreg
+North East CDC https://go.gov.sg/nemerchantreg
+North West CDC https://go.gov.sg/nwmerchantreg
+South East CDC https://go.gov.sg/semerchantreg
+South West CDC https://go.gov.sg/swmerchantreg
+In case of enquiries, please contact our hotline at 6225 5322. Theoperating hours of our hotline are:
+● 8am to 6pm, Mondays to Sundays, except Public Holidays (PH)
+● 8am to 1pm on eve of the 3 public holidays, namely New Year,Chinese New Year and Christmas
+
+
+8. How can I check my application status after I have submitted myinterest to participate?
+If you have submitted your application and have not received a replyafter 14 calendar days from the date of submission, please contact yourrespective CDCs to check on the status of your application. We seek your patience as our Ambassadors are reaching out to a large numberof merchants progressively in the next few months.
+Central Singapore CDC pa_centralsingapore@pa.gov.sg
+North East CDC northeast_cdc@pa.gov.sg
+North West CDC northwest_cdc@pa.gov.sg
+South East CDC southeast_cdc@pa.gov.sg
+South West CDC southwest_cdc@pa.gov.sg
+
+
+9. I had previously participated as a merchant in CDC Vouchers2022 under the digital scheme. Do I need to register again to joinCDC Vouchers Scheme 2023?
+No, there is no need to register again to participate in CDC Vouchers2022 if you have already been onboarded to the CDC Vouchers schemelaunched in Dec 2021. Our CDC Ambassadors will reach out to you toupdate on the new scheme and provide the welcome letter.
+
+
+10. What do I need to prepare to sign-up and onboard as a newparticipating heartland merchant/hawker?
+During the sign-up process, we will obtain your business contact information (such as bank account details, contact information andUEN used by your business). If you wish to provide other personalinformation to us (such as your NRIC No.), we may accept theinformation.
+You will need to prepare supporting documents for your bank account orPayNow proxy (handphone, NRIC or UEN), depending on which modeof payment was chosen.
+If you are an iPhone user, please also prepare your Apple ID andpassword on hand as you will need this to be able to download theRedeemSG Merchant app to accept the CDC Vouchers. Samples of supporting documents for merchant's PayNow (top) and bank account details (bottom). Merchants may prepare either type ofsupporting document based on mode of payment chosen.
+
+
+Onboarding for RegisteredMerchants
+11. How do I gain access to the app?
+You may download the app 'RedeemSG Merchant' on Apple App Storeor Google Play Store. A CDC Ambassador will get in touch with you forthe sign up and onboarding. Training will be provided during theonboarding process, and you will be provided with your unique shopcode to access the app.
+
+
+12. How do I get my shop code?
+You will receive your shop code from the CDC Ambassador during youronboarding session. It will also be sent to you via SMS to yourregistered mobile number.
+
+
+13. Can I share my RedeemSG Merchant account with my staff? Howdo they login to the app?
+Your staff can download the RedeemSG Merchant app using their owndevice, and log-in using the same shop code that was issued to you bythe CDC Ambassador or sent to you via SMS. Please get all your staffto download the app and login via your Shop Code to ensure thatcustomers can redeem their vouchers with your staff even if you are notat the stall.
+
+
+14. I currently have multiple shop branches. Am I able to track eachof the shops’ transactions individually and ensure only onebranch’s staff can see that branch’s records?
+Yes, in order to enable this, you can sign-up each branch as a singleshop account and that shop will be issued its own shop code. Staff willthen only be able to see that particular shop’s transactions.
