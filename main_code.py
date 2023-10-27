@@ -202,11 +202,11 @@ code_ex6 = '''
 def ex6():
 	st.title("Rule-based Echo Bot")
 	# Initialize chat history
-	if "messages" not in st.session_state:
-		st.session_state.messages = []
+	if "msg" not in st.session_state:
+		st.session_state.msg = []
 
 	# Display chat messages from history on app rerun
-	for message in st.session_state.messages:
+	for message in st.session_state.msg:
 		st.chat_message(message["role"]).markdown(message["content"])
 
 	# React to user input
@@ -214,7 +214,7 @@ def ex6():
 		# Display user message in chat message container
 		st.chat_message("user").markdown(prompt)
 		# Add user message to chat history
-		st.session_state.messages.append({"role": "user", "content": prompt})
+		st.session_state.msg.append({"role": "user", "content": prompt})
 
 		# define rule-based response
 		response = ""
@@ -226,7 +226,7 @@ def ex6():
 		# Display assistant response in chat message container
 		st.chat_message("assistant").markdown(response)
 		# Add assistant response to chat history
-		st.session_state.messages.append({"role": "assistant", "content": response})
+		st.session_state.msg.append({"role": "assistant", "content": response})
 
 '''
 
@@ -277,6 +277,11 @@ def ex8():
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
 
+	# display session_state.prompt_template if any
+	if st.session_state.prompt_template:
+		st.write("**Your :green[session_state.prompt_template] is set to:**", st.session_state.prompt_template)
+
+
 	# Initialize chat history
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
@@ -309,13 +314,12 @@ def ex8():
 
 code_ex9 = '''
 # Exercise 9 : Using the OpenAI API with streaming option
-
-def openai_completion_stream(query):
+def openai_completion_stream(query, prompt_template_passin):
 	MODEL = "gpt-3.5-turbo"
 	response = openai.ChatCompletion.create(
 		model=MODEL,
 		messages=[
-			{"role": "system", "content": st.session_state.prompt_template},
+			{"role": "system", "content": prompt_template_passin},
 			{"role": "user", "content": query},
 		],
 		temperature=0,
@@ -330,6 +334,10 @@ def ex9():
 	st.title("Chatbot using OpenAI Stream API")
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
+
+	# display session_state.prompt_template if any
+	if st.session_state.prompt_template:
+		st.write("**Your :green[session_state.prompt_template] is set to:**", st.session_state.prompt_template)
 
 	# Initialize chat history
 	if "msg" not in st.session_state:
@@ -350,7 +358,7 @@ def ex9():
 			message_placeholder = st.empty()
 			full_response = ""
 			# streaming function
-			for response in openai_completion_stream(query):
+			for response in openai_completion_stream(query,st.session_state.prompt_template):
 				full_response += response.choices[0].delta.get("content", "")
 				message_placeholder.markdown(full_response + "▌")
 			message_placeholder.markdown(full_response)
@@ -438,8 +446,9 @@ openaiembedding = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
 def document_loader():
+	text_loader_kwargs={'autodetect_encoding': True}
 	if TARGET_DOC_TYPE=="TXT":
-		loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader)
+		loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader, loader_kwargs=text_loader_kwargs)
 	elif TARGET_DOC_TYPE=='PDF':
 		loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.pdf", loader_cls=PyPDFLoader)
 	else:
@@ -836,3 +845,4 @@ Below is the conversation history between the AI and Users so far
 	st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
 
 '''
+
