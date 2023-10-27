@@ -531,7 +531,6 @@ def ex9():
 		
 
 
-
 # Exercise 10: Chatbot with memory
 from langchain.memory import ConversationBufferWindowMemory
 def ex10():
@@ -705,9 +704,12 @@ def RAG_LanceDB_OpenAI():
 Use the following pieces of context to answer the question at the end. 
 If you don't know the answer, just say that you don't know, don't try to make up an answer. 
 Use three sentences maximum and keep the answer as concise as possible. 
-{context}
-Question: {question}
-Answer:
+
+<Context>: {context}
+
+<Question>: {question}
+
+<Answer>:
 """	
 	st.markdown(f"#### Your RAG Prompt Template")
 	st.write({st.session_state.prompt_template_RAG})
@@ -746,7 +748,7 @@ Answer:
 				message_placeholder = st.empty()
 				full_response = ""
 				# streaming function
-				for response in openai_completion_stream(input_prompt_formated):
+				for response in openai_completion_stream(query, input_prompt_formated):
 					full_response += response.choices[0].delta.get("content", "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
@@ -756,23 +758,38 @@ Answer:
 def ex11_and_ex12():
 	st.subheader("Exercise 11 & 12: Create RAG Chatbot and Vector Stores")
 	st.write("Now, we will create a vector store to store the user's document(s).")
-	st.write("This process uses OpenAI to generate embeddings and vector store (**LanceDB**/**Pinecone**) for storing these embeddings.")
-	st.write("For now, it only works for txt and xxx files")
-	st.markdown(
-	"""
-	For both exercise, we will xxxxx:
+	st.write("This process uses OpenAI to generate embeddings and vector store (**LanceDB**/**Pinecone**) for storing text embeddings.")
+	st.write("For experimentation, we will focus on TXT and/or PDF file(s) ONLY.")
+	st.write("Soon you will notice the :red[**drawback of LanceDB**] is that it doesn't integrate with LangChain well and users have to recreate vector store everytime after application is restarted or session is refreshed. Whereas :green[**Pinecone**] is able to load existing indexes from vector store without a need to recreate.")
+	st.markdown("""
+
+	For both exercises, we will:
 	- Call the function **prompt_inputs_forms()** created in Exercise 7 to display the form in case user want to set a new prompt template
 	- Set the number of previous messages to remember in :green[**ConversationBufferwindowMemory(K=n)**] and store the memory in :green[**st.session_state.memory**]. Note that there is a new import statement :blue[**from *langchain.memory* import ConversationBufferWindowMemory**].
 	- Integrate the memory with the session state prompt template :green[**st.session_state.prompt_template**]
 	- Save the conversation in the memory using :green[**save_context({"input": "user input msg"}, {"output": "model respond message"})**]
 	""" 
-	) 
-    
+	)
+	
 	# with open("./UPLOADED/CDCMerchantsFAQ.pdf", "rb") as f:
 	# 	st.download_button("CDCMerchantsFAQ PDF", f, "CDCMerchantsFAQ.pdf")
+	st.divider()
 	tab1, tab2, tab3 = st.tabs(["Spliting Chunks", "RAG Chatbot 1", "RAG Chatbot 2"])
 	with tab1:
+		# duplicate Excercise 5 - File Uploading
+		uploaded_file = st.file_uploader("Upload a file", type=allowed_extensions)
+		if uploaded_file is not None:
+			if is_valid_file(uploaded_file):
+				# Save the uploaded file to the upload folder
+				file_path = os.path.join(f"{UPLOAD_DIRECTORY}", uploaded_file.name)
+				with open(file_path, "wb") as f:
+					f.write(uploaded_file.getvalue())
+				st.success(f"File '{uploaded_file.name}' uploaded successfully.")
+			else:
+				st.error("Invalid file. Please upload a .docx, .txt, or .pdf file with a size of up to 10MB.")
 		display_uploaded_files()
+	
+		st.divider()
 		st.write(f"#### Your targeted document is **{TARGET_DOC_TYPE}**")
 		documents=document_loader()
 		st.write("**No. of Chunks:**", len(documents))
@@ -851,9 +868,12 @@ def RAG_Pinecone_OpenAI():
 Use the following pieces of context to answer the question at the end. 
 If you don't know the answer, just say that you don't know, don't try to make up an answer. 
 Use three sentences maximum and keep the answer as concise as possible. 
-{context}
-Question: {question}
-Answer:
+
+<Context>: {context}
+
+<Question>: {question}
+
+<Answer>:
 """	
 	st.markdown(f"#### Your RAG Prompt Template")
 	st.write({st.session_state.prompt_template_RAG})
@@ -881,7 +901,7 @@ Answer:
 				message_placeholder = st.empty()
 				full_response = ""
 				# streaming function
-				for response in openai_completion_stream(input_prompt_formated):
+				for response in openai_completion_stream(query,input_prompt_formated):
 					full_response += response.choices[0].delta.get("content", "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
@@ -1129,7 +1149,7 @@ def main():
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
 	if "memory" not in st.session_state:
-		st.session_state.memory = ConversationBufferWindowMemory(k=1)
+		st.session_state.memory = ConversationBufferWindowMemory(k=3)
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
 	# initialize vectorstore in session_state
