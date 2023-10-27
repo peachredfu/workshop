@@ -441,7 +441,7 @@ UPLOAD_DIRECTORY = os.path.join(os.getcwd(), "UPLOADED")
 DB_DIRECTORY = os.path.join(os.getcwd(), "LanceDB") # define LanceDB directory 
 TABLE_NAME = "my_table" # LanceDB table name
 TBL_DIRECTORY = os.path.join(DB_DIRECTORY, TABLE_NAME+'.lance')
-TARGET_DOC_TYPE = "TXT"
+TARGET_DOC_TYPE = "PDF"
 openaiembedding = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
@@ -519,9 +519,12 @@ def RAG_LanceDB_OpenAI():
 Use the following pieces of context to answer the question at the end. 
 If you don't know the answer, just say that you don't know, don't try to make up an answer. 
 Use three sentences maximum and keep the answer as concise as possible. 
-{context}
-Question: {question}
-Answer:
+
+<Context>: {context}
+
+<Question>: {question}
+
+<Answer>:
 """	
 	st.markdown(f"#### Your RAG Prompt Template")
 	st.write({st.session_state.prompt_template_RAG})
@@ -549,7 +552,7 @@ Answer:
 				message_placeholder = st.empty()
 				full_response = ""
 				# streaming function
-				for response in openai_completion_stream(input_prompt_formated):
+				for response in openai_completion_stream(query,input_prompt_formated):
 					full_response += response.choices[0].delta.get("content", "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
@@ -558,7 +561,9 @@ Answer:
 def ex11_and_ex12():
 	tab1, tab2, tab3 = st.tabs(["Spliting Chunks", "RAG Chatbot 1", "RAG Chatbot 2"])
 	with tab1:
-		display_uploaded_files()
+		# duplicate Excercise 5 - File Uploading
+		ex5()
+		st.divider()
 		st.write(f"#### Your targeted document is **{TARGET_DOC_TYPE}**")
 		documents=document_loader()
 		st.write("**No. of Chunks:**", len(documents))
@@ -638,9 +643,12 @@ def RAG_Pinecone_OpenAI():
 Use the following pieces of context to answer the question at the end. 
 If you don't know the answer, just say that you don't know, don't try to make up an answer. 
 Use three sentences maximum and keep the answer as concise as possible. 
-{context}
-Question: {question}
-Answer:
+
+<Context>: {context}
+
+<Question>: {question}
+
+<Answer>:
 """	
 	st.markdown(f"#### Your RAG Prompt Template")
 	st.write({st.session_state.prompt_template_RAG})
@@ -666,7 +674,7 @@ Answer:
 				message_placeholder = st.empty()
 				full_response = ""
 				# streaming function
-				for response in openai_completion_stream(input_prompt_formated):
+				for response in openai_completion_stream(query,input_prompt_formated):
 					full_response += response.choices[0].delta.get("content", "")
 					message_placeholder.markdown(full_response + "▌")
 				message_placeholder.markdown(full_response)
