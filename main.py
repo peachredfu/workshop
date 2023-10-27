@@ -32,6 +32,7 @@ def workshop_sidebar():
 					MenuItem("Exercise 10", icon='journal-code'),
 				]), 
 			MenuItem('Vector Store and RAG', icon='', children=[
+					MenuItem('Sample Files', icon='cloud-download', href='https://github.com/peachredfu/workshop/tree/main/UPLOADED'),
 					MenuItem("Exercise 11&12", icon='journal-code'),
 				]), 
 			MenuItem('Integrate Google LLM API', icon='', children=[
@@ -39,6 +40,12 @@ def workshop_sidebar():
 					MenuItem("Exercise 14", icon='journal-code'),
 					MenuItem("Exercise 15", icon='journal-code'),
 				]), 
+			# MenuItem('Smart Agent', icon='', children=[
+			# 		MenuItem("Exercise 16", icon='journal-code'),
+			# 	]),
+			# MenuItem('Document Search', icon='', children=[
+			# 		MenuItem("Exercise 17", icon='journal-code'),
+			# 	]),
 			MenuItem(type='divider',dashed=True),],open_all=True, index=2)
 
 		clear_session = st.button("**Clear Chat Memory**")
@@ -65,6 +72,7 @@ def workshop_sidebar():
 	elif opt == 'Exercise 13': ex13()
 	elif opt == 'Exercise 14': ex14()
 	elif opt == 'Exercise 15': ex15()
+	# elif opt == 'Exercise 16': ex16()
 	else: workshop_code_template()
 
 #to display after reveal code for each exercise
@@ -137,21 +145,28 @@ def ex3():
 	with st.expander("Reveal Code"): 
 		st.code(mc.code_ex3, language='python')
 	after_reveal_code(False)
-	st.write("**[Things to note]** The exercises data list (e.g. :green[**Exercise 1**], :green[**Exercise 11&12**]) names must match with the if-else conditional statement (e.g. :green[if opt=='**Exercise 1**'])")
+	st.write(
+    """
+    **[Things to note]** 
+    - The exercises data list (e.g. :green[**Exercise 1**], :green[**Exercise 11&12**]) names must match with the if-else conditional statement (e.g. :green[if opt=='**Exercise 1**'])")
+    - Please using :green[**Ctrl**] + :green[**/**] to comment off the unavailable exercises' functions in :green[**elif**] statements to avoid error
+	"""
+	)
+ 
 
 # Exercise 4: chat elements
 def ex4():
 	st.subheader("Exercise 4: Chat Elements")  
 	st.markdown(
 	"""
-	Let's try out the available chat elements and build converational window using:
+	Let's try out the available chat elements and build a conversation window using:
 	- **st.chat_message()**: a container that lets you insert any Streamlit elements including charts, tables, text and more from the user or assitant. 
 	- **st.chat_input()**: lets you display a chat input that the user has entered. It returns a :green[**string value**] of the user's input or :green[**None**] if the user hasn't sent a message yet.
 	""" 
 	)
 	st.write("For this exercise, we will be displaying chat messages by different authors with customized avatar shown next to the message.")
 	st.write("**st.chat_message**( < *'user'/'assistant'/'custom author name'*>, avatar=<*emoji or image only for user/assistant*>)")
-	st.write("**st.input_message**( < *placeholder text shown when chat input textbox is empty*>)")
+	st.write("**st.chat_input**( < *placeholder text shown when chat input textbox is empty*>)")
   
 	with st.expander("Reveal Code"): st.code(mc.code_ex4, language='python')
 	after_reveal_code(True)
@@ -258,11 +273,11 @@ def ex6():
 	st.subheader("Rule-based Echo Bot", divider='rainbow')	
 	st.caption("Try entering the rule-based response keyword: '*Hello*' and '*What is up?*'. (Enter the keyword in UPPERCASE and see what happens) ")
 	# Initialize chat history
-	if "messages" not in st.session_state:
-		st.session_state.messages = []
+	if "msg" not in st.session_state:
+		st.session_state.msg = []
 
 	# Display chat messages from history on app rerun
-	for message in st.session_state.messages:
+	for message in st.session_state.msg:
 		st.chat_message(message["role"]).markdown(message["content"])
 
 	# React to user input
@@ -270,7 +285,7 @@ def ex6():
 		# Display user message in chat message container
 		st.chat_message("user").markdown(prompt)
 		# Add user message to chat history
-		st.session_state.messages.append({"role": "user", "content": prompt})
+		st.session_state.msg.append({"role": "user", "content": prompt})
 
 		# define rule-based response
 		response = ""
@@ -278,11 +293,11 @@ def ex6():
 			response = "Hi there what can I do for you"
 		else:
 			response = f"Echo: {prompt}"
-   
+
 		# Display assistant response in chat message container
 		st.chat_message("assistant").markdown(response)
 		# Add assistant response to chat history
-		st.session_state.messages.append({"role": "assistant", "content": response})
+		st.session_state.msg.append({"role": "assistant", "content": response})
 
 
 def ex7():
@@ -327,7 +342,7 @@ def secrets():
 	st.write("Before doing the next few exercises, you will need to hide your API keys (e.g. OpenAI, PALM, Pinecone) or any other credentials/secrets.")
 	st.write("In your **CHATBOT** working directory, create a new folder :red[**.**]**streamlit**.")
 	st.write("Do take note of the **dot** infront of the folder.")
-	st.write("Under the new folder, create a new file **secrets.toml**. This file will be provided during the workshop.")
+	st.write("Under the new folder, create a new file **secrets.toml**. The file content will be provided during the workshop.")
 	st.write(":blue[**Code**]")
 	st.code(
      """
@@ -366,24 +381,54 @@ def ex8():
 	st.markdown(
 	"""
 	For this exercise, we will:
-	- Create a new function **openai_completion()** to generate a response from OpenAI based on user chat input. Note that there is a new import statement **import openai**
-	- Call OpenAI LLM API using :green[**openai.ChatCompletion.create()**] inside **openai_completion()**.
-	- Set the :green[**messages**] prarameter for :green[**openai.ChatCompletion.create()**] inside **openai_completion_stream()**.
-		- There are three types of messages corresponding to three roles: system, user, assistant xxxx  
-	- Adjust the LLM :green[**temperature**] parameter. The higher the temperature, the more random the results. (Temperature is between 0 and 1)  
-		- For transformation tasks (extraction, standardization, format conversion, grammar fixes) prefer a temperature of 0 or up to 0.3.   
-		- For writing tasks, you should adjust the temperature higher, closer to 0.5. If you want GPT to be highly creative (for marketing or advertising copy for instance), consider values between 0.7 and 1  
-		- If you want to experiment and create many variations quickly, a high temperature is better. But do note that a very high temperature increases the risk of 'hallucination', meaning that the AI starts selecting words that will make no sense or be offtopic.     
+	- Create a new function :blue[**openai_completion()**] to generate a response from OpenAI based on user chat input. Note that there is a new import statement :blue[**import openai**].
+	- Call OpenAI LLM API using **openai.ChatCompletion.create()** inside :blue[**openai_completion()**].
+	- Set the following prarameter for **openai.ChatCompletion.create()**:
+		- :green[**model**]: The OpenAI GPT model to use (e.g. gpt-3.5-turbo, gpt-4). 
+		- :green[**messages**]: Often adopt specific roles to guide the model's responses (the three roles: :green[user], :green[system], :green[assistant]).   
+		- :green[**temperature**]: The higher the temperature, the more random the results. (Temperature is between 0 and 1)  
 	""" 
 	)
-
+	with st.expander("When to use the different messages role?"): 	
+		st.markdown(
+		"""
+		- :green[user]: The user messages help instruct the assistant. Generated by end user like you and me   
+		- :green[system]: The system messages set the behavior of the assistant. This is the model identity. For this exercise, the assistant will be instructed with the **prompt_template** set in Exercise 7 (e.g. You are a philosophy teacher). 
+		- :green[assistant]: The assistant messages stores prior responses. This is to remind the model of its previous responses.   
+		""" 
+		)
+		st.write(" ")
+		st.write("**Code Example of the different messages role**")
+		st.code('''
+        response = openai.ChatCompletion.create(
+		model="gpt-3.5.turbo",
+		messages=[
+			{"role": "system", "content": st.session_state.prompt_template},
+			{"role": "user", "content": query},
+			{"role": "assistant", "content": "model previous responses"},   
+		],
+		temperature=0
+	)
+          ''', language='python')
+	with st.expander("Temperature Tips"): 	st.markdown(
+	"""
+	- For transformation tasks (extraction, standardization, format conversion, grammar fixes), consider a temperature of 0 or up to 0.3.   
+	- For writing tasks, you should adjust the temperature higher, closer to 0.5. If you want GPT to be highly creative (for marketing or advertising copy for instance), consider values between 0.7 and 1  
+	- If you want to experiment and create many variations quickly, a high temperature is better. But do note that a very high temperature increases the risk of 'hallucination', meaning that the AI starts selecting words that will make no sense or be offtopic.     
+	""" 
+	)
 	with st.expander("Reveal Code"): st.code(mc.code_ex8, language='python')
 	after_reveal_code(True)
 	st.subheader("Chatbot using OpenAI API", divider='rainbow') 
 
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
-  	
+
+	# display session_state.prompt_template if any
+	if st.session_state.prompt_template:
+		st.write("**Your :green[session_state.prompt_template] is set to:**", st.session_state.prompt_template)
+		st.caption("Recall in **Exercise 7**, you stored the input you have entered in **session_state.prompt_template**?")
+ 	
 	# Initialize chat history
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
@@ -420,12 +465,12 @@ def ex8():
 # if "prompt_template" not in st.session_state:
 # 	st.session_state.prompt_template = "You are a helpful assistant" 
 # def openai_completion_stream(query, prompt_template = st.session_state.prompt_template):
-def openai_completion_stream(query):
+def openai_completion_stream(query, prompt_template_passin):
 	MODEL = "gpt-3.5-turbo"
 	response = openai.ChatCompletion.create(
 		model=MODEL,
 		messages=[
-			{"role": "system", "content": st.session_state.prompt_template},
+			{"role": "system", "content": prompt_template_passin},
 			{"role": "user", "content": query},
 		],
 		temperature=0,
@@ -442,7 +487,7 @@ def ex9():
 	st.markdown(
 	"""
 	For this exercise, we will:
-	- Create a new function **openai_completion_stream()** to generate streaming response from OpenAI based on user input. 
+	- Create a new function **openai_completion_stream(*query*, *prompt_template_passin*)** that takes in two arguments to generate streaming response from OpenAI based on user input. 
 	- Set the prarameter :green[**stream=True**] for :green[**openai.ChatCompletion.create()**] inside **openai_completion_stream()**.
 	- Handle real-time text generation response in ex9() using **for-loop**. For-loop is a conditonal iterative statement that is used to repeat a specific block of code until a condition is met.
 	""" 
@@ -468,7 +513,6 @@ def ex9():
 		with st.chat_message(message["role"]):
 			st.markdown(message["content"])
 
-
 	if query := st.chat_input("say something"):
 		# set user prompt in chat history
 		st.session_state.msg.append({"role": "user", "content": query})
@@ -479,7 +523,7 @@ def ex9():
 			message_placeholder = st.empty()
 			full_response = ""
 			# streaming function
-			for response in openai_completion_stream(query):
+			for response in openai_completion_stream(query,st.session_state.prompt_template):
 				full_response += response.choices[0].delta.get("content", "")
 				message_placeholder.markdown(full_response + "▌")
 			message_placeholder.markdown(full_response)
@@ -491,7 +535,22 @@ def ex9():
 # Exercise 10: Chatbot with memory
 from langchain.memory import ConversationBufferWindowMemory
 def ex10():
+	st.subheader("Exercise 10: Chatbot with memory")
+	st.write("Now, we will create a chatbot similar to Exercise 9 but with memory. The memory that will be used is ***langchain* ConversationBufferwindowMemory**.")
+	st.write(":green[**ConversationBufferwindowMemory(K=n)**] keeps a list of the interactions of the coversation over time. You can determine the number of previous messages to remember by setting the ***K*** parameter.")
+ 
+	st.markdown(
+	"""
+	For this exercise, we will:
+	- Call the function **prompt_inputs_forms()** created in Exercise 7 to display the form in case user want to set a new prompt template
+	- Set the number of previous messages to remember in :green[**ConversationBufferwindowMemory(K=n)**] and store the memory in :green[**st.session_state.memory**]. Note that there is a new import statement :blue[**from *langchain.memory* import ConversationBufferWindowMemory**].
+	- Integrate the memory with the session state prompt template :green[**st.session_state.prompt_template**]
+	- Save the conversation in the memory using :green[**save_context({"input": "user input msg"}, {"output": "model respond message"})**]
+	""" 
+	) 
+ 
 	with st.expander("Reveal Code"): st.code(mc.code_ex10, language='python')
+	after_reveal_code(True) 
 	st.subheader("Chatbot with Memory", divider='rainbow')
 	
 	# display prompt_inputs_form in case user want to set a new prompt template
@@ -563,19 +622,21 @@ UPLOAD_DIRECTORY = os.path.join(os.getcwd(), "UPLOADED")
 DB_DIRECTORY = os.path.join(os.getcwd(), "LanceDB") # define LanceDB directory 
 TABLE_NAME = "my_table" # LanceDB table name
 TBL_DIRECTORY = os.path.join(DB_DIRECTORY, TABLE_NAME+'.lance')
-TARGET_DOC_TYPE = "TXT"
+TARGET_DOC_TYPE = "PDF"
 openaiembedding = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
 def document_loader():
+	text_loader_kwargs={'autodetect_encoding': True}
 	if TARGET_DOC_TYPE=="TXT":
-		loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader)
+		loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.txt", loader_cls=TextLoader, loader_kwargs=text_loader_kwargs)
 	elif TARGET_DOC_TYPE=='PDF':
 		loader = DirectoryLoader(f"{UPLOAD_DIRECTORY}", glob="**/*.pdf", loader_cls=PyPDFLoader)
 		#loader = PyPDFLoader(f"{UPLOAD_DIRECTORY}"/*.pdf")
 		#documents = loader.load_and_split()
 	else:
 		return None
+
 
 	documents = loader.load()
 	# recursively tries to split by different characters to find one that works
@@ -693,6 +754,22 @@ Answer:
 			# st.session_state.memory.save_context({"input": query}, {"output": full_response})
 
 def ex11_and_ex12():
+	st.subheader("Exercise 11 & 12: Create RAG Chatbot and Vector Stores")
+	st.write("Now, we will create a vector store to store the user's document(s).")
+	st.write("This process uses OpenAI to generate embeddings and vector store (**LanceDB**/**Pinecone**) for storing these embeddings.")
+	st.write("For now, it only works for txt and xxx files")
+	st.markdown(
+	"""
+	For both exercise, we will xxxxx:
+	- Call the function **prompt_inputs_forms()** created in Exercise 7 to display the form in case user want to set a new prompt template
+	- Set the number of previous messages to remember in :green[**ConversationBufferwindowMemory(K=n)**] and store the memory in :green[**st.session_state.memory**]. Note that there is a new import statement :blue[**from *langchain.memory* import ConversationBufferWindowMemory**].
+	- Integrate the memory with the session state prompt template :green[**st.session_state.prompt_template**]
+	- Save the conversation in the memory using :green[**save_context({"input": "user input msg"}, {"output": "model respond message"})**]
+	""" 
+	) 
+    
+	# with open("./UPLOADED/CDCMerchantsFAQ.pdf", "rb") as f:
+	# 	st.download_button("CDCMerchantsFAQ PDF", f, "CDCMerchantsFAQ.pdf")
 	tab1, tab2, tab3 = st.tabs(["Spliting Chunks", "RAG Chatbot 1", "RAG Chatbot 2"])
 	with tab1:
 		display_uploaded_files()
@@ -978,6 +1055,65 @@ Below is the conversation history between the AI and Users so far
 		st.session_state.msg.append({"role": "assistant", "content": full_response})
 		st.session_state.memory.save_context({"input": query}, {"output": full_response})
 	st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
+
+
+# Exercise 16: Smart Agent
+from langchain.agents import ConversationalChatAgent, AgentExecutor
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.chat_models import ChatOpenAI
+from langchain.memory import ConversationBufferMemory
+from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
+from langchain.tools import DuckDuckGoSearchRun
+
+# https://github.com/langchain-ai/streamlit-agent/blob/main/streamlit_agent/search_and_chat.py
+def ex16():
+	st.subheader("🦜 LangChain: Chat with Internet Search")
+
+	msgs = StreamlitChatMessageHistory()
+	memory = ConversationBufferMemory(
+     chat_memory=msgs, return_messages=True, memory_key="chat_history", output_key="output"
+	)
+	reset_btn = st.button("Reset chat history")
+	if len(msgs.messages) == 0 or reset_btn:
+		msgs.clear()
+		msgs.add_ai_message("How can I help you?")
+		st.session_state.steps = {}
+
+	avatars = {"human": "user", "ai": "assistant"}
+	for idx, msg in enumerate(msgs.messages):
+		with st.chat_message(avatars[msg.type]):
+			# Render intermediate steps if any were saved
+			for step in st.session_state.steps.get(str(idx), []):
+				if step[0].tool == "_Exception":
+					continue
+				with st.status(f"**{step[0].tool}**: {step[0].tool_input}", state="complete"):
+					st.write(step[0].log)
+					st.write(step[1])
+			st.write(msg.content)
+
+	if prompt := st.chat_input(placeholder="say something"):
+		st.chat_message("user").write(prompt)
+
+		# llm = ChatVertexAI(model_name="chat-bison",temperature=0, credentials = google_api_cred, project=google_api_cred.project_id)
+		llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=0, openai_api_key=st.secrets["openai_key"], streaming=True)
+		tools = [DuckDuckGoSearchRun(name="Search")]
+		chat_agent = ConversationalChatAgent.from_llm_and_tools(llm=llm, tools=tools)
+		executor = AgentExecutor.from_agent_and_tools(
+			agent=chat_agent,
+			tools=tools,
+			memory=memory,
+			return_intermediate_steps=True,
+			handle_parsing_errors=True,
+		)
+		with st.chat_message("assistant"):
+			st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
+			response = executor(prompt, callbacks=[st_cb])
+			st.write(response["output"])
+			st.session_state.steps[str(len(msgs.messages) - 1)] = response["intermediate_steps"]
+
+
+
+
 
 
 from streamlit_antd_components import divider 
