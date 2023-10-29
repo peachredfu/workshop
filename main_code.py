@@ -61,9 +61,10 @@ def ex2():
 code_ex3 = '''
 # Exercise 3: sidebar
 def ex3():
-	clear_session = st.sidebar.button("**Clear Session**")
+	clear_session = st.sidebar.button("**Clear Chat History**")
 	if clear_session: 
-		st.session_state.clear()
+		st.session_state.msg.clear()
+  		st.session_state.memory.clear()
 		print("Your session is cleared.")
 
 	exercises = [
@@ -443,7 +444,7 @@ TABLE_NAME = "my_table" # LanceDB table name
 TBL_DIRECTORY = os.path.join(DB_DIRECTORY, TABLE_NAME+'.lance')
 TARGET_DOC_TYPE = "PDF"
 openaiembedding = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
-palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
+# palmembeddings = GooglePalmEmbeddings(google_api_key=st.secrets["palm_api_key"])
 
 def document_loader():
 	text_loader_kwargs={'autodetect_encoding': True}
