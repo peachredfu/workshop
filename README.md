@@ -1,10 +1,3 @@
-openai==0.28.1
-google-generativeai==0.2.0
-google-cloud-aiplatform==1.34.0
-langchain==0.0.306
-python-telegram-bot (don't specify version)
-
-
 # workshop
 ## for future explore
 1. Langchain Pandas Dataframe https://python.langchain.com/docs/integrations/toolkits/pandas
