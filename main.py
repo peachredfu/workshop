@@ -139,7 +139,7 @@ def ex2():
 def ex3():
 	st.subheader("Exercise 3: Navigational Sidebar")
 	st.write("Let's add interativity to the app by organizing the different exercises into a sidebar using **st.sidebar()**. It returns a :green[**string value**] of the selected option or :green[**None**] if no option is selected.")
-	st.write("For this exercise, we will do a radio button sidebar and also a button to clear the session which will be used in upcoming exercises.")
+	st.write("For this exercise, we will do a radio button sidebar and also a button to clear the session chat history which will be used in upcoming exercises.")
 	st.write("**st.sidebar.radio**( <*explanatory short label*>, <*elements or options*>, caption=<*caption to show under each option*>)")
 
 	with st.expander("Reveal Code"): 
