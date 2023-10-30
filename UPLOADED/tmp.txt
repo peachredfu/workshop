@@ -1,5 +1,5 @@
 openai_key="openai_key="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"
-palm_api_key="xxx"
+palm_api_key = "AIzaSyBIuf6wAg7xEobkYuncXfDgsOoHMouiTMc"
 pinecone_key="xxx"
 
 type="service_account"
