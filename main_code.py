@@ -582,6 +582,7 @@ code_ex12 = '''
 from langchain.vectorstores import Pinecone
 import pinecone
 
+# update environment base on your setup in pinecone.io
 pinecone.init(api_key=st.secrets["pinecone_key"], environment="asia-northeast1-gcp")
 vs_index_name = "workshop-vs"
 
