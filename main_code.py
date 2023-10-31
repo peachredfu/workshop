@@ -13,7 +13,7 @@ def main():
 	if "prompt_template" not in st.session_state:
 		st.session_state.prompt_template = "You are a helpful assistant"
 	if "memory" not in st.session_state:
-		st.session_state.memory = ConversationBufferWindowMemory(k=1)
+		st.session_state.memory = ConversationBufferWindowMemory(k=3)
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
 	# initialize vectorstore in session_state
