@@ -861,6 +861,43 @@ Below is the conversation history between the AI and Users so far
 
 code_ex16 = '''
 # Exercise 16: Using Gemini-Pro stream
-# integration strem API call into chat components
+import google.generativeai as genai
+genai.configure(api_key=st.secrets["gemini_api_key"])
+# function to load Gemini Pro model and get repsonses
+model_gemini_pro=genai.GenerativeModel("gemini-pro") 
+chat_gemini_pro = model_gemini_pro.start_chat(history=[])
+
+def gemini_pro_chat(prompt):
+	response=chat_gemini_pro.send_message(prompt,stream=True)
+	return response
+	
+def ex16():
+	st.title("Chatbot using Gemini-Pro API")
+	# Initialize chat history
+	if "msg" not in st.session_state:
+		st.session_state.msg = []
+
+	# Showing Chat history
+	for message in st.session_state.msg:
+		with st.chat_message(message["role"]):
+			st.markdown(message["content"])
+	try:
+		if prompt := st.chat_input("say something"):
+			# set user prompt in chat history
+			st.session_state.msg.append({"role": "user", "content": prompt})
+			with st.chat_message("user"):
+				st.markdown(prompt)
+
+			with st.chat_message("assistant"):
+				message_placeholder = st.empty()
+				full_response = ""
+				for chunk in gemini_pro_chat(prompt):
+					full_response += chunk.text
+					message_placeholder.markdown(full_response + "▌")
+				message_placeholder.markdown(full_response)
+			st.session_state.msg.append({"role": "assistant", "content": full_response})
+
+	except Exception as e:
+		st.error(e)
 
 '''
