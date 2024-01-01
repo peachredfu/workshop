@@ -82,6 +82,7 @@ def ex3():
 				"Exercise 13",
 				"Exercise 14",
 				"Exercise 15",
+    				"Exercise 16",
 			]
 
 	opt = st.sidebar.radio(
@@ -101,7 +102,8 @@ def ex3():
 				"VectorStore and RAG",	#11	#12
 				"Chatbot using PALM API",	#13
 				"Chatbot using Vertex AI",	#14
-				"Chatbot using Vertex AI Stream API"	#15    
+				"Chatbot using Vertex AI Stream API",	#15    
+    				"Chatbot using Gemini-Pro API"	#16 
 			], 
 			horizontal=False)
 
@@ -119,6 +121,7 @@ def ex3():
 	elif opt == 'Exercise 13': ex13()
 	elif opt == 'Exercise 14': ex14()
 	elif opt == 'Exercise 15': ex15()
+ 	elif opt == 'Exercise 16': ex16()
 	else: ex1()
 '''
 
@@ -856,3 +859,8 @@ Below is the conversation history between the AI and Users so far
 
 '''
 
+code_ex16 = '''
+# Exercise 16: Using Gemini-Pro stream
+# integration strem API call into chat components
+
+'''
