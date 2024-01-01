@@ -1091,7 +1091,8 @@ def gemini_pro_chat(prompt):
 	return response
 	
 def ex16():
-	st.title("Chatbot using Gemini-Pro API")
+	with st.expander("Reveal Code"): st.code(mc.code_ex16, language='python')
+	st.subheader("Chatbot using Gemini-Pro API", divider='rainbow')
 	# Initialize chat history
 	if "msg" not in st.session_state:
 		st.session_state.msg = []
