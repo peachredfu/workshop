@@ -39,12 +39,13 @@ def workshop_sidebar():
 					MenuItem("Exercise 13", icon='journal-code'),
 					MenuItem("Exercise 14", icon='journal-code'),
 					MenuItem("Exercise 15", icon='journal-code'),
+					MenuItem("Exercise 16", icon='journal-code'),
 				]), 
 			# MenuItem('Smart Agent', icon='', children=[
-			# 		MenuItem("Exercise 16", icon='journal-code'),
+			# 		MenuItem("Exercise 17", icon='journal-code'),
 			# 	]),
 			# MenuItem('Document Search', icon='', children=[
-			# 		MenuItem("Exercise 17", icon='journal-code'),
+			# 		MenuItem("Exercise 18", icon='journal-code'),
 			# 	]),
 			MenuItem(type='divider',dashed=True),],open_all=True, index=2)
 
@@ -72,7 +73,8 @@ def workshop_sidebar():
 	elif opt == 'Exercise 13': ex13()
 	elif opt == 'Exercise 14': ex14()
 	elif opt == 'Exercise 15': ex15()
-	# elif opt == 'Exercise 16': ex16()
+	elif opt == 'Exercise 16': ex16()	
+	# elif opt == 'Exercise 17': ex17()
 	else: workshop_code_template()
 
 #to display after reveal code for each exercise
@@ -1077,7 +1079,49 @@ Below is the conversation history between the AI and Users so far
 	st.write("**Memory Data**: ", st.session_state.memory.load_memory_variables({}))
 
 
-# Exercise 16: Smart Agent
+# Exercise 16: Google Gemini Pro
+import google.generativeai as genai
+genai.configure(api_key=st.secrets["gemini_api_key"])
+# function to load Gemini Pro model and get repsonses
+model_gemini_pro=genai.GenerativeModel("gemini-pro") 
+chat_gemini_pro = model_gemini_pro.start_chat(history=[])
+
+def gemini_pro_chat(prompt):
+	response=chat_gemini_pro.send_message(prompt,stream=True)
+	return response
+	
+def ex16():
+	st.title("Chatbot using Gemini-Pro API")
+	# Initialize chat history
+	if "msg" not in st.session_state:
+		st.session_state.msg = []
+
+	# Showing Chat history
+	for message in st.session_state.msg:
+		with st.chat_message(message["role"]):
+			st.markdown(message["content"])
+	try:
+		if prompt := st.chat_input("say something"):
+			# set user prompt in chat history
+			st.session_state.msg.append({"role": "user", "content": prompt})
+			with st.chat_message("user"):
+				st.markdown(prompt)
+
+			with st.chat_message("assistant"):
+				message_placeholder = st.empty()
+				full_response = ""
+				for chunk in gemini_pro_chat(prompt):
+					full_response += chunk.text
+					message_placeholder.markdown(full_response + "▌")
+				message_placeholder.markdown(full_response)
+			st.session_state.msg.append({"role": "assistant", "content": full_response})
+
+	except Exception as e:
+		st.error(e)
+
+
+
+# Exercise 17: Smart Agent
 from langchain.agents import ConversationalChatAgent, AgentExecutor
 from langchain.callbacks import StreamlitCallbackHandler
 from langchain.chat_models import ChatOpenAI
@@ -1086,7 +1130,7 @@ from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 from langchain.tools import DuckDuckGoSearchRun
 
 # https://github.com/langchain-ai/streamlit-agent/blob/main/streamlit_agent/search_and_chat.py
-def ex16():
+def ex17():
 	st.subheader("🦜 LangChain: Chat with Internet Search")
 
 	msgs = StreamlitChatMessageHistory()
